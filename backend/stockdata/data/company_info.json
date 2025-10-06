@@ -1,0 +1,407 @@
+[
+    {
+        "symbol": "ADBL",
+        "full_name": "Agricultural Development Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "AHL",
+        "full_name": "Aspen Insurance Holdings Ltd.",
+        "sector": "Insurance"
+    },
+    {
+        "symbol": "AHPC",
+        "full_name": "Arun Valley Hydropower Development Co. Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "AKJCL",
+        "full_name": "Ankhu Khola Jalvidhyut Company Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "AKPL",
+        "full_name": "Arun Kabeli Power Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "ALICL",
+        "full_name": "Asian Life Insurance Co. Ltd.",
+        "sector": "Life Insurance"
+    },
+    {
+        "symbol": "API",
+        "full_name": "American Petroleum Institute",
+        "sector": "Oil & Gas"
+    },
+    {
+        "symbol": "BARUN",
+        "full_name": "Barun Hydropower Co. Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "BBC",
+        "full_name": "Buddha Air Pvt. Ltd.",
+        "sector": "Aviation"
+    },
+    {
+        "symbol": "BEDC",
+        "full_name": "Bhote Koshi Power Company Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "BFC",
+        "full_name": "Best Finance Company Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "BGWT",
+        "full_name": "Buddha Gautam Hydropower Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "BHPL",
+        "full_name": "Buddha Himalaya Power Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "BNL",
+        "full_name": "Buddha Nepal Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "BNT",
+        "full_name": "Buddha Nepal Trading Ltd.",
+        "sector": "Trading"
+    },
+    {
+        "symbol": "BPCL",
+        "full_name": "Buddha Power Company Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "CBBL",
+        "full_name": "Central Finance Co. Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "CGH",
+        "full_name": "Chhattisgarh Hydro Power Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "CHCL",
+        "full_name": "Chhattisgarh Cable Ltd.",
+        "sector": "Cable Manufacturing"
+    },
+    {
+        "symbol": "CHDC",
+        "full_name": "Chhattisgarh Hydroelectric Development Co. Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "CHL",
+        "full_name": "Chhattisgarh Housing Ltd.",
+        "sector": "Real Estate"
+    },
+    {
+        "symbol": "CIT",
+        "full_name": "Chhattisgarh Industrial Trading Ltd.",
+        "sector": "Trading"
+    },
+    {
+        "symbol": "CITY",
+        "full_name": "City Development Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "CLI",
+        "full_name": "Chhattisgarh Leasing & Investment Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "CZBIL",
+        "full_name": "Chhattisgarh Zonal Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "DDBL",
+        "full_name": "Deprosc Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "EBL",
+        "full_name": "Everest Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "FMDBL",
+        "full_name": "Fewa Finance Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "FOWAD",
+        "full_name": "Fewa Water & Development Ltd.",
+        "sector": "Water Supply"
+    },
+    {
+        "symbol": "GBBL",
+        "full_name": "Gorkha Bikas Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "GBIME",
+        "full_name": "Global IME Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "GBLBS",
+        "full_name": "Global IME Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "GFCL",
+        "full_name": "Gorkha Finance Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "HATHY",
+        "full_name": "Himalayan Power Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "HBL",
+        "full_name": "Himalayan Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "HDL",
+        "full_name": "Himalayan Distillery Ltd.",
+        "sector": "Distillery"
+    },
+    {
+        "symbol": "HEI",
+        "full_name": "Himalayan Engineering Ltd.",
+        "sector": "Engineering"
+    },
+    {
+        "symbol": "HIDCL",
+        "full_name": "Hydroelectricity Investment and Development Co. Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "HPPL",
+        "full_name": "Himalayan Power Projects Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "HRL",
+        "full_name": "Himalayan Rubber Ltd.",
+        "sector": "Rubber Manufacturing"
+    },
+    {
+        "symbol": "ILI",
+        "full_name": "International Leasing & Finance Co. Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "JBBL",
+        "full_name": "Janaki Finance Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "JFL",
+        "full_name": "Jeevan Finance Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "JOSHI",
+        "full_name": "Joshi Enterprises Ltd.",
+        "sector": "Trading"
+    },
+    {
+        "symbol": "KBL",
+        "full_name": "Kailash Bikas Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "KDL",
+        "full_name": "Kailash Development Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "KPCL",
+        "full_name": "Kailash Power Co. Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "LICN",
+        "full_name": "Life Insurance Corporation Nepal Ltd.",
+        "sector": "Life Insurance"
+    },
+    {
+        "symbol": "LLBS",
+        "full_name": "Lumbini Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "MANDU",
+        "full_name": "Mandhu Hydropower Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "MBL",
+        "full_name": "Machhapuchchhre Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "MDB",
+        "full_name": "Madhya Bikas Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "MFIL",
+        "full_name": "Muktinath Finance Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "MLBBL",
+        "full_name": "Muktinath Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "MNBBL",
+        "full_name": "Madhya Nepal Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "MSHL",
+        "full_name": "Madhya Shree Hydropower Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "NABIL",
+        "full_name": "Nabil Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "NADEP",
+        "full_name": "Nadep Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "NBL",
+        "full_name": "Nepal Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "NHPC",
+        "full_name": "Nepal Hydropower Co. Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "NICA",
+        "full_name": "Nepal Industrial Credit & Investment Corporation Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "NICL",
+        "full_name": "Nepal Insurance Co. Ltd.",
+        "sector": "Insurance"
+    },
+    {
+        "symbol": "NIL",
+        "full_name": "Nepal Investment Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "NLG",
+        "full_name": "Nepal Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "NLIC",
+        "full_name": "Nepal Life Insurance Co. Ltd.",
+        "sector": "Life Insurance"
+    },
+    {
+        "symbol": "NMB",
+        "full_name": "NMB Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "NRIC",
+        "full_name": "Nepal Reinsurance Co. Ltd.",
+        "sector": "Reinsurance"
+    },
+    {
+        "symbol": "NTC",
+        "full_name": "Nepal Telecom Co. Ltd.",
+        "sector": "Telecommunications"
+    },
+    {
+        "symbol": "NUBL",
+        "full_name": "Nepal Utsav Bikas Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "OHL",
+        "full_name": "OHL Construction Ltd.",
+        "sector": "Construction"
+    },
+    {
+        "symbol": "PCBL",
+        "full_name": "Prabhu Capital Ltd.",
+        "sector": "Finance"
+    },
+    {
+        "symbol": "PRIN",
+        "full_name": "Prabhu Insurance Ltd.",
+        "sector": "Insurance"
+    },
+    {
+        "symbol": "RAWA",
+        "full_name": "Rastriya Banijya Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "RBCL",
+        "full_name": "Rastriya Beema Sansthan Ltd.",
+        "sector": "Insurance"
+    },
+    {
+        "symbol": "RHPL",
+        "full_name": "Rastriya Hydropower Co. Ltd.",
+        "sector": "Hydropower"
+    },
+    {
+        "symbol": "RLFL",
+        "full_name": "Rastriya Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "RNLI",
+        "full_name": "Rastriya Nepal Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "SADBL",
+        "full_name": "Siddhartha Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "SAHAS",
+        "full_name": "Sahas Laghubitta Bittiya Sanstha Ltd.",
+        "sector": "Microfinance"
+    },
+    {
+        "symbol": "SANIMA",
+        "full_name": "Sanima Bank Ltd.",
+        "sector": "Commercial Banks"
+    },
+    {
+        "symbol": "SANVI",
+        "full_name": "Sanvi Hydropower",
+        "sector": "Commercial Banks"
+    }
+]

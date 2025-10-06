@@ -1,0 +1,124 @@
+.price-history-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    font-family: "Segoe UI", sans-serif;
+}
+
+.price-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.price-history-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+    margin: 0;
+}
+
+.price-history-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.date-range-btn,
+.reset-btn {
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.date-range-btn:hover,
+.reset-btn:hover {
+    background: #ececec;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.price-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.price-table th {
+    background: #f4f6f8;
+    text-align: left;
+    padding: 10px;
+    color: #333;
+    font-weight: 600;
+}
+
+.price-table td {
+    padding: 10px;
+    border-top: 1px solid #e2e2e2;
+}
+
+.price-table tr:hover {
+    background: #fafafa;
+}
+
+.positive {
+    color: #16a34a;
+    /* emerald green */
+    font-weight: 500;
+}
+
+.negative {
+    color: #dc2626;
+    /* red */
+    font-weight: 500;
+}
+
+.change-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.positive-bg {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.negative-bg {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    font-size: 14px;
+    color: #555;
+}
+
+.pagination button {
+    border: none;
+    background: #f0f0f0;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination button:hover {
+    background: #e5e5e5;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
