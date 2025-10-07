@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import json
 from django.http import JsonResponse, Http404
+import math
 
 # toggle for server-side debug prints
 DEBUG = False
@@ -296,10 +297,6 @@ def stock_data(request, symbol):
 
 
 def list_companies(request):
-    """
-    GET /api/companies/
-    Returns all companies from company_info.json
-    """
     try:
         with open(COMPANIES_FILE, "r", encoding="utf-8") as f:
             company_info = json.load(f)
@@ -310,3 +307,101 @@ def list_companies(request):
     # Sort alphabetically by symbol
     company_info = sorted(company_info, key=lambda x: x["symbol"])
     return JsonResponse(company_info, safe=False)
+
+
+def price_history(request, symbol):
+    file_path = os.path.join(DATA_DIR, f"{symbol.upper()}.csv")
+    if not os.path.exists(file_path):
+        return JsonResponse({"error": "File not found"}, status=404)
+
+    try:
+        df = pd.read_csv(file_path)
+
+        # --- Normalize column names ---
+        df.columns = [c.strip().replace(" ", "_").lower() for c in df.columns]
+
+        rename_map = {
+            "date": "date",
+            "open": "open",
+            "high": "high",
+            "low": "low",
+            "close": "close",
+            "percent_change": "change_percent",  # if present in CSV
+            "volume": "volume",
+            "turnover": "turnover",
+        }
+        df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
+
+        # --- Parse dates and sort chronologically (oldest -> newest) BEFORE computing diffs ---
+        if "date" in df.columns:
+            df["date"] = pd.to_datetime(df["date"], errors="coerce")
+            df = df.dropna(subset=["date"]).sort_values("date", ascending=True).reset_index(drop=True)
+
+        # --- Clean numeric columns ---
+        numeric_cols = ["open", "high", "low", "close", "turnover", "volume"]
+        for col in numeric_cols:
+            if col in df.columns:
+                s = df[col].astype(str).fillna("")
+                s = s.str.replace(r"^\s*[-–]\s*$", "", regex=True)   # lone dash -> missing
+                s = s.str.replace(",", "", regex=False)              # remove thousand separators
+                s = s.str.replace(r"[^0-9.\-]", "", regex=True)      # remove stray chars
+                s = s.str.strip()
+                df[col] = pd.to_numeric(s, errors="coerce")
+
+        # --- If percent column exists, clean/format it (optional) ---
+        if "change_percent" in df.columns:
+            s = df["change_percent"].astype(str).fillna("")
+            s = s.str.replace("%", "", regex=False).str.strip()
+            s = s.str.replace(r"[^0-9.\-]", "", regex=True)
+            df["change_percent"] = pd.to_numeric(s, errors="coerce")
+
+        # --- Compute change and percent in chronological order (correct alignment) ---
+        if "close" in df.columns:
+            df["prev_close"] = df["close"].shift(1)
+            # numeric change = current_close - previous_close
+            df["change"] = (df["close"] - df["prev_close"]).round(2)
+            # percent relative to previous close
+            df["change_percent"] = ((df["change"] / df["prev_close"]) * 100).round(2)
+            # For the first row (no previous), set to None
+            df.loc[df["prev_close"].isna(), ["change", "change_percent"]] = [None, None]
+            # Format percent as string like "-5.88%"
+            df["change_percent"] = df["change_percent"].apply(
+                lambda x: f"{x:.2f}%" if pd.notnull(x) else None
+            )
+            df = df.drop(columns=["prev_close"], errors="ignore")
+
+        # --- Reverse so latest rows come first (frontend expects latest-first) ---
+        df = df.iloc[::-1].reset_index(drop=True)
+
+        # --- Choose and order output columns (keeps original CSV columns if present) ---
+        out_cols = []
+        if "date" in df.columns:
+            df["date"] = df["date"].dt.strftime("%Y-%m-%d")
+            out_cols.append("date")
+
+        candidate_cols = ["change", "change_percent", "close", "turnover", "volume", "open", "high", "low"]
+        for c in candidate_cols:
+            if c in df.columns:
+                out_cols.append(c)
+
+        # Ensure JSON-safe (NaN -> None) and convert numpy types to Python primitives
+        df_out = df[out_cols].where(pd.notnull(df[out_cols]), None)
+        records = df_out.to_dict(orient="records")
+        cleaned = []
+        for rec in records:
+            new_rec = {}
+            for k, v in rec.items():
+                # numpy scalars -> Python native
+                if isinstance(v, (np.integer, np.floating)):
+                    v = v.item()
+                # floats that are NaN -> None
+                if isinstance(v, float) and math.isnan(v):
+                    v = None
+                new_rec[k] = v
+            cleaned.append(new_rec)
+
+        # Return proper JSON (Django JsonResponse sets application/json)
+        return JsonResponse(cleaned, safe=False)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)

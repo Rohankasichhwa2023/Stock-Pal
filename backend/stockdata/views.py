@@ -7,6 +7,7 @@ import json
 from django.http import JsonResponse, Http404
 import math
 
+
 # toggle for server-side debug prints
 DEBUG = False
 
@@ -403,5 +404,27 @@ def price_history(request, symbol):
         # Return proper JSON (Django JsonResponse sets application/json)
         return JsonResponse(cleaned, safe=False)
 
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+def company_info(request, symbol):
+
+    try:
+        with open(COMPANIES_FILE, "r", encoding="utf-8") as f:
+            companies = json.load(f)
+
+        # Find the company by symbol (case-insensitive)
+        company = next(
+            (c for c in companies if c["symbol"].lower() == symbol.lower()), None
+        )
+
+        if not company:
+            raise Http404("Company not found")
+
+        return JsonResponse(company, safe=False)
+
+    except FileNotFoundError:
+        return JsonResponse({"error": "Company info file not found"}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
