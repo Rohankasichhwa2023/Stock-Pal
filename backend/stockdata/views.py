@@ -428,3 +428,35 @@ def company_info(request, symbol):
         return JsonResponse({"error": "Company info file not found"}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+
+
+
+def nepse_data(request):
+    # Path to your CSV file
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_path = os.path.join(base_dir, 'data', 'nepse', 'nepse.csv')
+    if not os.path.exists(csv_path):
+        return JsonResponse({"error": "NEPSE CSV file not found"}, status=404)
+
+
+
+    # Read and clean data
+    df = pd.read_csv(csv_path)
+
+    # Clean numeric columns (remove commas and convert to float)
+    numeric_cols = ['Open', 'High', 'Low', 'Close', 'Change', 'Per Change (%)', 'Turnover']
+    for col in numeric_cols:
+        df[col] = df[col].astype(str).str.replace(',', '').astype(float)
+
+    # Format turnover to volume in millions (or keep original)
+    df['Volume (in millions)'] = (df['Turnover'] / 1_000_000).round(2)
+
+    # Sort by date (optional)
+    df['Date'] = pd.to_datetime(df['Date'])
+    df = df.sort_values('Date', ascending=True)
+
+    # Prepare JSON response
+    data = df.to_dict(orient='records')
+
+    return JsonResponse({'data': data}, safe=False)
