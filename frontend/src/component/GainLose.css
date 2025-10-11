@@ -1,0 +1,51 @@
+/* GainLose.css */
+
+.gainlose-container {
+    padding: 16px;
+    font-family: Arial, sans-serif;
+}
+
+.gainlose-container h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.gainlose-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+
+.gainlose-table th,
+.gainlose-table td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: center;
+}
+
+/* Light green header for Gainers table */
+.gainlose-table.gainers thead tr {
+    background-color: #d4edda;
+    /* light green */
+}
+
+/* Light red header for Losers table */
+.gainlose-table.losers thead tr {
+    background-color: #f8d7da;
+    /* light red */
+}
+
+.gainlose-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.gainlose-table .gainer {
+    color: green;
+    font-weight: bold;
+}
+
+.gainlose-table .loser {
+    color: red;
+    font-weight: bold;
+}
