@@ -460,3 +460,50 @@ def nepse_data(request):
     data = df.to_dict(orient='records')
 
     return JsonResponse({'data': data}, safe=False)
+
+
+def top_gainers_losers(request):
+    results = []
+
+    for file in os.listdir(DATA_DIR):
+        if file.endswith(".csv"):
+            path = os.path.join(DATA_DIR, file)
+            df = pd.read_csv(path)
+
+            if 'Symbol' not in df.columns or 'Percent Change' not in df.columns:
+                continue
+
+            # Clean Percent Change
+            df['Percent Change'] = (
+                df['Percent Change']
+                .astype(str)
+                .str.replace('%', '', regex=False)
+                .str.replace(' ', '', regex=False)
+            )
+            df['Percent Change'] = pd.to_numeric(df['Percent Change'], errors='coerce')
+            df = df.dropna(subset=['Percent Change'])
+            if df.empty:
+                continue
+
+            # Latest row
+            df = df.sort_values(by='Date', ascending=False)
+            latest_row = df.iloc[0]
+
+            previous_row = df.iloc[1]
+            actual_change = float(latest_row['Close']) - float(previous_row['Close'])
+
+            results.append({
+                'symbol': latest_row['Symbol'],
+                'percent_change': float(latest_row['Percent Change']),
+                'close': float(latest_row['Close']),
+                'change': actual_change
+            })
+
+    # Sort
+    top_gainers = sorted(results, key=lambda x: x['percent_change'], reverse=True)[:5]
+    top_losers = sorted(results, key=lambda x: x['percent_change'])[:5]
+
+    return JsonResponse({
+        'top_gainers': top_gainers,
+        'top_losers': top_losers
+    })

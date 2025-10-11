@@ -248,7 +248,7 @@ export default function TradingView() {
 
             const x = padding.left + candleSpacing * i + candleSpacing / 2;
             const isGreen = close >= open;
-            const color = isGreen ? "#26a69a" : "#ef5350";
+            const color = isGreen ? "#089981" : "#F23645";
 
             // wick
             ctx.strokeStyle = color;
@@ -266,24 +266,24 @@ export default function TradingView() {
             ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
         }
 
-        // SMA20 line
-        ctx.strokeStyle = "#2962ff";
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        let started = false;
-        for (let i = 0; i < n; i++) {
-            const val = visible.sma20[i];
-            if (val === null || isNaN(val)) continue;
-            const x = padding.left + candleSpacing * i + candleSpacing / 2;
-            const y = priceToY(val);
-            if (!started) {
-                ctx.moveTo(x, y);
-                started = true;
-            } else {
-                ctx.lineTo(x, y);
-            }
-        }
-        if (started) ctx.stroke();
+        // // SMA20 line
+        // ctx.strokeStyle = "#010101ff";
+        // ctx.lineWidth = 1.5;
+        // ctx.beginPath();
+        // let started = false;
+        // for (let i = 0; i < n; i++) {
+        //     const val = visible.sma20[i];
+        //     if (val === null || isNaN(val)) continue;
+        //     const x = padding.left + candleSpacing * i + candleSpacing / 2;
+        //     const y = priceToY(val);
+        //     if (!started) {
+        //         ctx.moveTo(x, y);
+        //         started = true;
+        //     } else {
+        //         ctx.lineTo(x, y);
+        //     }
+        // }
+        // if (started) ctx.stroke();
 
         // Current price line
         let latestIdx = -1;
@@ -307,7 +307,7 @@ export default function TradingView() {
 
             const openAtLatest = visible.open[latestIdx];
             const isGreen = openAtLatest !== null ? latestPrice >= openAtLatest : true;
-            ctx.fillStyle = isGreen ? "#26a69a" : "#ef5350";
+            ctx.fillStyle = isGreen ? "#089981" : "#F23645";
             ctx.fillRect(width - padding.right, y - 10, padding.right - 5, 20);
             ctx.fillStyle = "#ffffff";
             ctx.textAlign = "center";
@@ -328,14 +328,30 @@ export default function TradingView() {
         }
 
         // Date labels
+        // Dynamic Date Labels (auto change format based on zoom)
         ctx.fillStyle = "#787b86";
         ctx.font = "11px Arial";
         ctx.textAlign = "center";
+
+        let dateFormatOptions;
+        if (n < 90) {
+            // short range: show day + month
+            dateFormatOptions = { month: 'short', day: 'numeric' };
+        } else if (n < 365) {
+            // mid range: show month + year
+            dateFormatOptions = { month: 'short', year: '2-digit' };
+        } else {
+            // long range: show only year
+            dateFormatOptions = { year: 'numeric' };
+        }
+
         for (let i = 0; i < n; i += dateGridInterval) {
             const x = padding.left + candleSpacing * i + candleSpacing / 2;
-            const dateStr = visible.dates[i] ? new Date(visible.dates[i]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+            const dateObj = new Date(visible.dates[i]);
+            const dateStr = !isNaN(dateObj) ? dateObj.toLocaleDateString('en-US', dateFormatOptions) : '';
             ctx.fillText(dateStr, x, height - padding.bottom + 20);
         }
+
 
         // Volume label
         ctx.fillStyle = "#787b86";
@@ -523,7 +539,7 @@ export default function TradingView() {
                     )}
                 </div>
 
-                <canvas ref={canvasRef} width={1200} height={600} style={{ display: "block", borderRadius: "4px" }} />
+                <canvas ref={canvasRef} width={1050} height={500} style={{ display: "block", borderRadius: "4px" }} />
             </div>
 
             <div

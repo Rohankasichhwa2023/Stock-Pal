@@ -1,108 +1,25 @@
-/* --- Container --- */
-.search-container {
-    position: relative;
-    width: 340px;
-    margin: 20px auto;
-    font-family: "Poppins", sans-serif;
-}
+/* Dashboard.css */
 
-/* --- Search Box --- */
-.search-box {
-    position: relative;
+.dashboard-content {
     display: flex;
-    align-items: center;
-    background: #fff;
-    border: 1.5px solid #d1d5db;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: all 0.2s ease;
+    gap: 16px;
+    /* space between left and right */
+    padding: 16px;
 }
 
+.left-panel {
+    flex: 2;
+    /* takes more space */
+}
 
-.search-box input {
+.right-panel {
     flex: 1;
-    border: none;
-    outline: none;
-    padding: 12px 45px 12px 15px;
-    font-size: 15px;
-    color: #111827;
-    background: transparent;
+    /* smaller column */
 }
 
-.search-icon {
-    position: absolute;
-    right: 15px;
-    color: #6b7280;
-    font-size: 16px;
-}
-
-/* --- Dropdown Menu --- */
-.dropdown {
-    position: absolute;
-    width: 100%;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    list-style: none;
-    margin: 0 0 0 0;
-    padding: 0;
-    z-index: 100;
-    overflow: hidden;
-    animation: fadeIn 0.15s ease-in-out;
-}
-
-.dropdown li {
-    padding: 12px 15px;
-    border-bottom: 1px solid #6b7280;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    font-size: 15px;
-    font-weight: 500;
-    color: #374151;
-}
-
-.dropdown li:hover {
-    background: #10b981;
-    color: white;
-}
-
-/* --- Smooth Animation --- */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-6px);
+/* Optional: make responsive */
+@media (max-width: 768px) {
+    .dashboard-content {
+        flex-direction: column;
     }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* --- Scrollbar for Long Lists --- */
-.dropdown {
-    max-height: 250px;
-    overflow-y: auto;
-}
-
-.dropdown::-webkit-scrollbar {
-    width: 6px;
-}
-
-.dropdown::-webkit-scrollbar-thumb {
-    background: #d1d5db;
-    border-radius: 10px;
-}
-
-/* --- Clear Icon (×) --- */
-.clear-icon {
-    position: absolute;
-    right: 38px;
-    color: #9ca3af;
-    font-size: 16px;
-    cursor: pointer;
-    transition: color 0.2s ease;
-}
-
-.clear-icon:hover {
-    color: #ef4444;
 }
