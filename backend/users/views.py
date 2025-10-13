@@ -2,12 +2,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from .models import User
 from .serializers import UserSerializer, RegisterSerializer
-
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -15,7 +13,6 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
-
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -29,6 +26,9 @@ def signup(request):
             'user': UserSerializer(user).data,
             'tokens': tokens
         }, status=status.HTTP_201_CREATED)
+    
+    # <-- Log the validation errors
+    print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
