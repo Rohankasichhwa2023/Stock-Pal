@@ -24,4 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('', include("stockdata.urls")),
+    path('watchlist/', include('watchlist.urls')), 
 ]

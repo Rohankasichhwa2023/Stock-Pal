@@ -17,7 +17,7 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://127.0.0.1:8000/users/signup/", formData);
+            await axios.post("http://127.0.0.1:8000/users/signup/", formData);
             alert("User created successfully!");
             setFormData({ username: "", email: "", password: "" });
             navigate("/login");
