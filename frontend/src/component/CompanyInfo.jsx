@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./CompanyInfo.css";
+import WatchlistButton from "./WatchlistButton";
 
 const CompanyInfo = () => {
     const { symbol } = useParams(); // get symbol from route param
@@ -42,6 +43,7 @@ const CompanyInfo = () => {
                     <h3 className="company-name">{company.full_name}</h3>
                     <p className="company-sector">Sector: {company.sector}</p>
                 </div>
+                <WatchlistButton symbol={company.symbol} />
             </div>
         </div>
     );
