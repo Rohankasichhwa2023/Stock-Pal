@@ -3,27 +3,32 @@ import React, { createContext, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+    // Store user info and JWT access token
     const [user, setUser] = useState(
         JSON.parse(localStorage.getItem("user")) || null
     );
-    const [token, setToken] = useState(localStorage.getItem("token") || null);
+    const [accessToken, setAccessToken] = useState(
+        localStorage.getItem("accessToken") || null
+    );
 
-    const login = (userData, accessToken) => {
+    // Login function: stores user info and access token
+    const login = (userData, token) => {
         setUser(userData);
-        setToken(accessToken);
+        setAccessToken(token); // corrected
         localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("token", accessToken);
+        localStorage.setItem("accessToken", token); // store as accessToken
     };
 
+    // Logout function: clears everything
     const logout = () => {
         setUser(null);
-        setToken(null);
+        setAccessToken(null);
         localStorage.removeItem("user");
-        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, login, logout }}>
+        <AuthContext.Provider value={{ user, accessToken, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

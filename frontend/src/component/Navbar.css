@@ -1,87 +1,111 @@
-/* --- Container --- */
+/* --- Navbar Layout --- */
+.navbar-container {
+    font-family: "Poppins", sans-serif;
+    width: 100%;
+    background-color: white;
+    /* Deep blue-gray */
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* --- Left Title --- */
+.nav-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #10b981;
+    /* Green accent */
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+
+.nav-links button.active {
+    background-color: #10b981;
+    /* Green highlight */
+    color: white;
+    border-radius: 6px;
+    padding: 8px 18px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* --- Center Search Box --- */
 .search-container {
     position: relative;
     width: 340px;
-    margin: 20px auto;
-    font-family: "Poppins", sans-serif;
 }
 
-/* --- Search Box --- */
 .search-box {
     position: relative;
     display: flex;
     align-items: center;
-    background: #fff;
+    background: #f9fafb;
     border: 1.5px solid #d1d5db;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease;
 }
-
 
 .search-box input {
     flex: 1;
     border: none;
     outline: none;
-    padding: 12px 45px 12px 15px;
+    padding: 10px 40px 10px 15px;
     font-size: 15px;
     color: #111827;
     background: transparent;
+    border-radius: 8px;
 }
 
-.search-icon {
+.clear-icon {
     position: absolute;
-    right: 15px;
-    color: #6b7280;
-    font-size: 16px;
+    right: 12px;
+    font-size: 18px;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color 0.2s;
 }
 
-/* --- Dropdown Menu --- */
+.clear-icon:hover {
+    color: #ef4444;
+}
+
+/* --- Dropdown --- */
 .dropdown {
     position: absolute;
+    top: 42px;
     width: 100%;
     background: #fff;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     list-style: none;
-    margin: 0 0 0 0;
+    margin: 0;
     padding: 0;
     z-index: 100;
     overflow: hidden;
-    animation: fadeIn 0.15s ease-in-out;
+    max-height: 250px;
+    overflow-y: auto;
 }
 
 .dropdown li {
-    padding: 12px 15px;
-    border-bottom: 1px solid #6b7280;
-    cursor: pointer;
-    transition: all 0.15s ease;
+    padding: 10px 15px;
     font-size: 15px;
-    font-weight: 500;
     color: #374151;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .dropdown li:hover {
     background: #10b981;
     color: white;
-}
-
-/* --- Smooth Animation --- */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-6px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* --- Scrollbar for Long Lists --- */
-.dropdown {
-    max-height: 250px;
-    overflow-y: auto;
 }
 
 .dropdown::-webkit-scrollbar {
@@ -93,16 +117,39 @@
     border-radius: 10px;
 }
 
-/* --- Clear Icon (×) --- */
-.clear-icon {
-    position: absolute;
-    right: 38px;
-    color: #9ca3af;
-    font-size: 16px;
+/* --- Right Section --- */
+.logout-btn {
+    background: #ef4444;
+    border: none;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: background 0.2s ease;
 }
 
-.clear-icon:hover {
-    color: #ef4444;
+.logout-btn:hover {
+    background: #dc2626;
+}
+
+/* --- Bottom Links --- */
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    background-color: #1e293b;
+    padding: 12px 0;
+    border-top: 1px solid #334155;
+}
+
+.nav-links button {
+    background: none;
+    border: none;
+    color: #f9fafb;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s ease;
 }

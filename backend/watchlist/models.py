@@ -1,12 +1,10 @@
 from django.conf import settings
 from django.db import models
-
-# Use settings.AUTH_USER_MODEL so it will point to your custom users.User
-UserModel = settings.AUTH_USER_MODEL
+from users.models import User 
 
 class WatchlistItem(models.Model):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="watchlist_items")
-    symbol = models.CharField(max_length=32)   # e.g. 'ADBL'
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist_items")
+    symbol = models.CharField(max_length=32) 
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

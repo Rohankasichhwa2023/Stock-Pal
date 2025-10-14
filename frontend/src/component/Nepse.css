@@ -43,9 +43,8 @@
 }
 
 .nepse-date {
-    display: flex;
+    display: grid;
     align-items: center;
-    gap: 15px;
     font-size: 14px;
     color: #666;
 }

@@ -6,6 +6,7 @@ import Dashboard from "./Dashboard";
 import { AuthProvider } from "./AuthContext";
 import Company from "./Company";
 import WatchlistPage from "./WatchlistPage";
+import AllCompany from "./AllCompany";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/company/:symbol" element={<Company />} />
           <Route path="/watchlist" element={<WatchlistPage />} />
+          <Route path="/allcompany" element={<AllCompany />} />
 
 
         </Routes>

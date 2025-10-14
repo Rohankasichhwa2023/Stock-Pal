@@ -6,8 +6,10 @@ import pandas as pd
 import json
 from django.http import JsonResponse, Http404
 import math
+from django.core.cache import cache
 
 
+CACHE_TIMEOUT = 3600 
 # toggle for server-side debug prints
 DEBUG = False
 
@@ -462,7 +464,12 @@ def nepse_data(request):
     return JsonResponse({'data': data}, safe=False)
 
 
+
 def top_gainers_losers(request):
+    cached_data = cache.get("top_gainers_losers")
+    if cached_data:
+        return JsonResponse(cached_data)
+
     results = []
 
     for file in os.listdir(DATA_DIR):
@@ -473,7 +480,6 @@ def top_gainers_losers(request):
             if 'Symbol' not in df.columns or 'Percent Change' not in df.columns:
                 continue
 
-            # Clean Percent Change
             df['Percent Change'] = (
                 df['Percent Change']
                 .astype(str)
@@ -485,10 +491,11 @@ def top_gainers_losers(request):
             if df.empty:
                 continue
 
-            # Latest row
             df = df.sort_values(by='Date', ascending=False)
-            latest_row = df.iloc[0]
+            if len(df) < 2:
+                continue
 
+            latest_row = df.iloc[0]
             previous_row = df.iloc[1]
             actual_change = float(latest_row['Close']) - float(previous_row['Close'])
 
@@ -499,11 +506,9 @@ def top_gainers_losers(request):
                 'change': actual_change
             })
 
-    # Sort
     top_gainers = sorted(results, key=lambda x: x['percent_change'], reverse=True)[:5]
     top_losers = sorted(results, key=lambda x: x['percent_change'])[:5]
 
-    return JsonResponse({
-        'top_gainers': top_gainers,
-        'top_losers': top_losers
-    })
+    data = {'top_gainers': top_gainers, 'top_losers': top_losers}
+    cache.set("top_gainers_losers", data, CACHE_TIMEOUT)  # Save to cache
+    return JsonResponse(data)
