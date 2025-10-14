@@ -1,18 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [query, setQuery] = useState("");
     const [companies, setCompanies] = useState([]);
     const [filtered, setFiltered] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
 
-    // Fetch companies list once
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/companies/")
             .then((res) => res.json())
@@ -20,11 +20,9 @@ const Navbar = () => {
             .catch((err) => console.error("Error loading companies:", err));
     }, []);
 
-    // Filter results as user types
     const handleSearch = (e) => {
         const val = e.target.value.toUpperCase();
         setQuery(val);
-
         if (val.trim() === "") {
             setFiltered([]);
             setShowDropdown(false);
@@ -37,7 +35,6 @@ const Navbar = () => {
         }
     };
 
-    // Navigate to company page when selecting or pressing Enter
     const handleSelect = (symbol) => {
         if (!symbol) return;
         navigate(`/company/${symbol}`);
@@ -55,7 +52,6 @@ const Navbar = () => {
         }
     };
 
-    // ✅ Clear input field and dropdown
     const handleClear = () => {
         setQuery("");
         setFiltered([]);
@@ -67,42 +63,80 @@ const Navbar = () => {
         navigate("/login");
     };
 
+    const goHome = () => navigate("/dashboard");
+    const goWatchlist = () => navigate("/watchlist");
+    const goAllCompany = () => navigate("/allcompany")
+
+    const isActive = (path) => location.pathname === path;
+
     if (!user) {
         navigate("/login");
         return null;
     }
 
     return (
-        <div style={{ maxWidth: "600px", margin: "50px auto", textAlign: "center" }}>
-            <h1>Welcome, {user.username}!</h1>
-            <p>Email: {user.email}</p>
-            <button onClick={handleLogout}>Logout</button>
-
-            <div className="search-container">
-                <div className="search-box">
-                    <input
-                        type="text"
-                        value={query}
-                        onChange={handleSearch}
-                        onKeyDown={handleKeyDown}
-                        placeholder="Search company symbol (e.g. NABIL, ADBL)..."
-                    />
-                    {query && (
-                        <span className="clear-icon" onClick={handleClear}>
-                            X
-                        </span>
-                    )}
+        <div className="navbar-container">
+            <div className="navbar">
+                <div className="nav-left">
+                    <h2 className="nav-title" onClick={goHome}>StockPal</h2>
                 </div>
 
-                {showDropdown && filtered.length > 0 && (
-                    <ul className="dropdown">
-                        {filtered.map((c) => (
-                            <li key={c.symbol} onClick={() => handleSelect(c.symbol)}>
-                                {c.symbol} — {c.full_name}
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                <div className="nav-center">
+                    <div className="search-container">
+                        <div className="search-box">
+                            <input
+                                type="text"
+                                value={query}
+                                onChange={handleSearch}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Search company symbol (e.g. NABIL, ADBL)..."
+                            />
+                            {query && (
+                                <span className="clear-icon" onClick={handleClear}>
+                                    ×
+                                </span>
+                            )}
+                        </div>
+
+                        {showDropdown && filtered.length > 0 && (
+                            <ul className="dropdown">
+                                {filtered.map((c) => (
+                                    <li
+                                        key={c.symbol}
+                                        onClick={() => handleSelect(c.symbol)}
+                                    >
+                                        {c.symbol} — {c.full_name}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </div>
+
+                <div className="nav-right">
+                    <button onClick={handleLogout} className="logout-btn">Logout</button>
+                </div>
+            </div>
+
+            <div className="nav-links">
+                <button
+                    onClick={goHome}
+                    className={isActive("/dashboard") ? "active" : ""}
+                >
+                    Home
+                </button>
+                <button
+                    onClick={goWatchlist}
+                    className={isActive("/watchlist") ? "active" : ""}
+                >
+                    Watchlist
+                </button>
+                <button
+                    onClick={goAllCompany}
+                    className={isActive("/allcompany") ? "active" : ""}
+                >
+                    Companies
+                </button>
             </div>
         </div>
     );

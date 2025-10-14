@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -19,8 +19,14 @@ def list_watchlist(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_to_watchlist(request):
+    print("request.user:", request.user, type(request.user))
+    print("HTTP_AUTHORIZATION:", request.META.get('HTTP_AUTHORIZATION'))
+
     user = request.user
+    # from users.models import User
+    # user = User.objects.get(username='rohankasichhwa')
     symbol = (request.data.get('symbol') or "").strip().upper()
+    # symbol = (request.data.get('symbol') or "ADBL").strip().upper()
     if not symbol:
         return Response({'error': 'Symbol is required'}, status=status.HTTP_400_BAD_REQUEST)
 

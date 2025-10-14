@@ -7,6 +7,7 @@ const Login = () => {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: "", password: "" });
+    const [error, setError] = useState("");
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,20 +15,31 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
         try {
             const response = await axios.post("http://127.0.0.1:8000/users/login/", formData);
             const { user, tokens } = response.data;
+
+            // Debug: Check if token exists
+            console.log("Login response:", response.data);
+            console.log("Access token:", tokens.access);
+
             login(user, tokens.access);
+
+            // Verify token is saved
+            console.log("Token after login:", localStorage.getItem("accessToken"));
+
             navigate("/dashboard");
         } catch (error) {
-            console.error(error);
-            alert("Invalid credentials");
+            console.error("Login error:", error.response?.data || error);
+            setError(error.response?.data?.detail || "Invalid credentials");
         }
     };
 
     return (
         <div style={{ maxWidth: "400px", margin: "50px auto" }}>
             <h2>Login</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Username:</label>

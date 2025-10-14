@@ -27,13 +27,22 @@
 /* Light green header for Gainers table */
 .gainlose-table.gainers thead tr {
     background-color: #d4edda;
+    cursor: pointer;
     /* light green */
+}
+
+.gainlose-table.gainers tbody tr {
+    cursor: pointer;
 }
 
 /* Light red header for Losers table */
 .gainlose-table.losers thead tr {
     background-color: #f8d7da;
     /* light red */
+}
+
+.gainlose-table.losers tbody tr {
+    cursor: pointer;
 }
 
 .gainlose-table tbody tr:nth-child(even) {

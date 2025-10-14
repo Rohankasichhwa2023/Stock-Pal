@@ -3,66 +3,105 @@ import api from "../api";
 import { AuthContext } from "../AuthContext";
 
 const WatchlistButton = ({ symbol }) => {
-    const { token } = useContext(AuthContext);
+    const { accessToken } = useContext(AuthContext);
     const [added, setAdded] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    // Check initial status
     useEffect(() => {
         let mounted = true;
+        const controller = new AbortController(); // native fetch cancellation also works with axios via CancelToken if you prefer
+
         const check = async () => {
+            // Use context token or fallback to localStorage (defensive)
+            const token = accessToken || localStorage.getItem("accessToken");
+            console.debug("WatchlistButton - token used:", !!token);
+
             if (!token) {
+                // no token available right now — don't call the API
                 setAdded(false);
                 return;
             }
+
             try {
-                const res = await api.get(`/watchlist/check/${symbol}/`);
+                const res = await api.get(`/watchlist/check/${symbol}/`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    signal: controller.signal, // safe; axios ignores signal in older versions — see note below
+                });
                 if (mounted) setAdded(!!res.data.added);
             } catch (err) {
+                if (err.name === 'CanceledError' || err.name === 'AbortError') {
+                    // request cancelled — ignore
+                    return;
+                }
                 console.error("Watchlist check error", err);
+                console.error("Error response:", err.response?.data);
+                console.error("Error status:", err.response?.status);
+
+                // Unauthorized -> token invalid or backend rejected it
+                if (err.response?.status === 401) {
+                    console.log("Token missing/expired/invalid for check");
+                    // optional: force logout or refresh token flow
+                }
             }
         };
+
         check();
-        return () => (mounted = false);
-    }, [symbol, token]);
+
+        return () => {
+            mounted = false;
+            try { controller.abort(); } catch (e) { /* ignore */ }
+        };
+    }, [symbol, accessToken]);
+
 
     const handleAdd = async () => {
-        if (!token) {
+        if (!accessToken) {
             alert("Please login to use watchlist");
             return;
         }
         setLoading(true);
         try {
-            const res = await api.post("/watchlist/add/", { symbol });
-            if (res.status === 201) {
-                setAdded(true);
-            } else if (res.data && res.data.message === "Already in watchlist") {
+            const res = await api.post("http://127.0.0.1:8000/watchlist/add/", { symbol });
+            if (res.status === 201 || (res.data && res.data.message === "Already in watchlist")) {
                 setAdded(true);
             }
         } catch (err) {
-            console.error(err);
-            alert("Failed to add to watchlist");
+            console.error("Add to watchlist error", err);
+            if (err.response?.status === 401) {
+                alert("Session expired. Please login again.");
+            } else {
+                alert("Failed to add to watchlist");
+            }
         } finally {
             setLoading(false);
         }
     };
 
     const handleRemove = async () => {
-        if (!token) {
+        if (!accessToken) {
             alert("Please login to use watchlist");
             return;
         }
         setLoading(true);
         try {
-            await api.delete(`/watchlist/remove/${symbol}/`);
+            await api.delete(`http://127.0.0.1:8000/watchlist/remove/${symbol}/`);
             setAdded(false);
         } catch (err) {
-            console.error(err);
-            alert("Failed to remove from watchlist");
+            console.error("Remove from watchlist error", err);
+            if (err.response?.status === 401) {
+                alert("Session expired. Please login again.");
+            } else {
+                alert("Failed to remove from watchlist");
+            }
         } finally {
             setLoading(false);
         }
     };
+
+    // Don't show button if not logged in
+    if (!accessToken) {
+        return null;
+    }
 
     return (
         <div>

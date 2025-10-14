@@ -5,6 +5,7 @@ import PriceHistory from "./component/PriceHistory";
 import CompanyInfo from "./component/CompanyInfo";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./component/Navbar";
 
 export default function Company() {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function Company() {
 
     return (
         <>
+            <Navbar />
             <CompanyInfo />
             <TradingView />
             <PriceHistory />

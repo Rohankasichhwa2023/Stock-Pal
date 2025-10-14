@@ -1,0 +1,110 @@
+.all-company-container {
+    font-family: "Poppins", sans-serif;
+    padding: 30px 50px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.all-company-container h1 {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 25px;
+}
+
+/* Filter Dropdown */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.filter-container label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.filter-container select {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-container select:hover {
+    border-color: #10b981;
+}
+
+/* Grid */
+.company-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+/* Company Card */
+.company-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.company-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+    border-color: #10b981;
+}
+
+/* Logo */
+.company-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    object-fit: contain;
+    margin-right: 15px;
+    background: #f1f5f9;
+}
+
+/* Text Info */
+.company-info h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.company-info p {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 2px 0;
+}
+
+.company-info .sector {
+    display: inline-block;
+    margin-top: 5px;
+    background: #10b981;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+
+.loading {
+    text-align: center;
+    font-size: 16px;
+    color: #6b7280;
+}
