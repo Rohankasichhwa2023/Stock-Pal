@@ -27,12 +27,13 @@
 }
 
 
+
 .nav-links button.active {
     background-color: #10b981;
     /* Green highlight */
     color: white;
     border-radius: 6px;
-    padding: 8px 18px;
+    /* padding: 8px 18px; */
     transition: all 0.2s ease-in-out;
 }
 
@@ -152,4 +153,11 @@
     cursor: pointer;
     font-weight: 500;
     transition: color 0.2s ease;
+}
+
+.nav-links button:hover {
+    background: #10b981;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
 }

@@ -442,7 +442,7 @@ export default function TradingView() {
     }, [data, chartState.startIndex, chartState.endIndex, chartState.isDragging]);
 
     return (
-        <div style={{ position: "relative", backgroundColor: "#f8f9fd", padding: "20px" }}>
+        <div style={{ position: "relative", backgroundColor: "#f8f9fd" }}>
             {latestInfo && (
                 <div
                     className="stock-info"
