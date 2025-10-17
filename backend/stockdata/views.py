@@ -7,7 +7,7 @@ import json
 from django.http import JsonResponse, Http404
 import math
 from django.core.cache import cache
-
+from django.conf import settings
 
 CACHE_TIMEOUT = 3600 
 # toggle for server-side debug prints
@@ -512,3 +512,27 @@ def top_gainers_losers(request):
     data = {'top_gainers': top_gainers, 'top_losers': top_losers}
     cache.set("top_gainers_losers", data, CACHE_TIMEOUT)  # Save to cache
     return JsonResponse(data)
+
+
+def announcement(request, symbol):
+    try:
+        base_dir = os.path.dirname(__file__)              
+        file_path = os.path.join(base_dir, "data", "announcement", f"{symbol.upper()}.csv")
+
+        if not os.path.exists(file_path):
+            return JsonResponse({"error": f"No announcement file found for {symbol}"}, status=404)
+
+        # Read CSV file
+        df = pd.read_csv(file_path)
+
+        # Drop sentiment column if present
+        if "sentiment" in df.columns:
+            df = df.drop(columns=["sentiment"])
+
+        # Convert DataFrame to JSON
+        data = df.to_dict(orient="records")
+
+        return JsonResponse(data, safe=False, status=200)
+    
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
