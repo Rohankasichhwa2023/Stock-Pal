@@ -7,6 +7,7 @@ import Announcement from "./component/Announcement";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./component/Navbar";
+import TechnicalIndicators from "./component/TechnicalIndicators";
 
 export default function Company() {
     const navigate = useNavigate();
@@ -49,6 +50,7 @@ export default function Company() {
                     <>
                         <TradingView />
                         <PriceHistory />
+                        <TechnicalIndicators />
                     </>
                 )}
                 {activeTab === "announcement" && (
