@@ -309,7 +309,7 @@ const Nepse = () => {
         <div className="nepse-container">
             <div className="nepse-header">
                 <div className="nepse-title"><h1>NEPSE</h1></div>
-                <div className="nepse-date">CLOSE PRICE</div>
+
             </div>
 
             <div className="nepse-price-section">

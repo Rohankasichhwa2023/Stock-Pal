@@ -8,6 +8,7 @@ import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./component/Navbar";
 import TechnicalIndicators from "./component/TechnicalIndicators";
+import PredictionCard from "./component/PredictionCard";
 
 export default function Company() {
     const navigate = useNavigate();
@@ -42,6 +43,18 @@ export default function Company() {
                 >
                     Announcements
                 </button>
+                <button
+                    className={activeTab === "technicalindicator" ? "active-tab" : ""}
+                    onClick={() => setActiveTab("technicalindicator")}
+                >
+                    Technical Indicators
+                </button>
+                <button
+                    className={activeTab === "prediction" ? "active-tab" : ""}
+                    onClick={() => setActiveTab("prediction")}
+                >
+                    Predictions
+                </button>
             </div>
 
             {/* Tab Content */}
@@ -50,11 +63,16 @@ export default function Company() {
                     <>
                         <TradingView />
                         <PriceHistory />
-                        <TechnicalIndicators />
                     </>
                 )}
                 {activeTab === "announcement" && (
                     <Announcement />
+                )}
+                {activeTab === "technicalindicator" && (
+                    <TechnicalIndicators />
+                )}
+                {activeTab === "prediction" && (
+                    <PredictionCard />
                 )}
             </div>
         </>

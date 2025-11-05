@@ -1,5 +1,5 @@
 # views.py
-import os
+import os,joblib
 import numbers
 import numpy as np
 import pandas as pd
@@ -8,14 +8,18 @@ from django.http import JsonResponse, Http404
 import math
 from django.core.cache import cache
 from django.conf import settings
+# from tensorflow.keras.models import load_model
 
 CACHE_TIMEOUT = 3600 
 # toggle for server-side debug prints
 DEBUG = False
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
-
 COMPANIES_FILE = os.path.join(os.path.dirname(__file__), "data", "company_info.json")
+
+SAVED_MODELS_DIR = os.path.join(os.path.dirname(__file__), "saved_models") 
+SAVED_MODELS_DIR = os.path.abspath(SAVED_MODELS_DIR)
+
 
 def _to_safe_float_series(series):
     """
@@ -536,3 +540,94 @@ def announcement(request, symbol):
     
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+
+# ML Model Code 
+def inverse_transform_close(scaled_close_array, scaler, close_idx, n_features):
+    arr = np.atleast_1d(np.asarray(scaled_close_array).reshape(-1))
+    out = np.zeros((len(arr), n_features))
+    out[:, close_idx] = arr
+    inv = scaler.inverse_transform(out)
+    return inv[:, close_idx]
+
+def load_artifacts_for_symbol(symbol):
+    from joblib import load as joblib_load
+    # lazy import of tensorflow to avoid module-level import errors at startup
+    try:
+        from tensorflow.keras.models import load_model
+    except Exception as e:
+        # raise a controlled error that your view can convert to Http404 or JSON error
+        raise RuntimeError("TensorFlow import failed: " + str(e))
+
+    base = SAVED_MODELS_DIR
+    scaler_path = os.path.join(base, f"{symbol}_scaler.joblib")
+    model_path   = os.path.join(base, f"{symbol}_model.h5")
+    preds_csv    = os.path.join(base, f"{symbol}_test_predictions.csv")
+    last_seq_csv = os.path.join(base, f"{symbol}_last_sequence_features.csv")
+
+    if not os.path.exists(scaler_path) or not os.path.exists(model_path):
+        raise FileNotFoundError("Model/scaler not found")
+
+    scaler = joblib_load(scaler_path)
+    model  = load_model(model_path)
+
+    predictions_df = pd.read_csv(preds_csv) if os.path.exists(preds_csv) else None
+    last_seq_df    = pd.read_csv(last_seq_csv) if os.path.exists(last_seq_csv) else None
+
+    return scaler, model, predictions_df, last_seq_df
+
+
+def prediction_info(request, symbol):
+    symbol = symbol.upper()
+    try:
+        scaler, model, preds_df, last_seq_df = load_artifacts_for_symbol(symbol)
+    except FileNotFoundError:
+        raise Http404("No model artifacts found for symbol")
+    except RuntimeError as imp_err:
+        # Return 503 or informative JSON so server doesn't crash on import failure
+        return JsonResponse({"error": "TensorFlow import failed", "details": str(imp_err)}, status=503)
+
+    # Next-day prediction from last_sequence_features (if present)
+    next_day_price = None
+    movement = None
+    if last_seq_df is not None:
+        # last_seq_df likely contains scaled features (if you saved scaled); if not, adapt to save scaled
+        X = last_seq_df.values.astype(float)  # shape (SEQ_LEN, n_features)
+        X = np.expand_dims(X, axis=0)
+        pred_scaled = model.predict(X).flatten()[0]
+        n_features = X.shape[-1]
+        close_idx = list(last_seq_df.columns).index('Close') if 'Close' in last_seq_df.columns else None
+        # If last_seq_df contains scaled columns in the same order as FEATURES, set close_idx accordingly.
+        # We'll assume you saved scaled features with the same FEATURES order; otherwise you'll need to save FEATURES list.
+        if close_idx is None:
+            # fallback: assume last column or GET index from a saved metadata
+            close_idx = 0  # best-effort; recommended: save FEATURES list with artifacts
+        next_day_price = float(inverse_transform_close([pred_scaled], scaler, close_idx, n_features)[0])
+        last_close = float(preds_df['Actual_Close'].iloc[-1]) if (preds_df is not None and len(preds_df)>0) else None
+        if last_close is not None:
+            if next_day_price > last_close:
+                movement = "UP"
+            elif next_day_price < last_close:
+                movement = "DOWN"
+            else:
+                movement = "UNCHANGED"
+
+    # Build response JSON for series (dates + actual + predicted)
+    series = []
+    if preds_df is not None:
+        # ensure Date is string
+        preds_df['Date'] = preds_df['Date'].astype(str)
+        for _, row in preds_df.iterrows():
+            series.append({
+                'date': str(row['Date']),
+                'actual': float(row['Actual_Close']),
+                'predicted': float(row['Pred_Close'])
+            })
+
+    response = {
+        'symbol': symbol,
+        'next_day_price': next_day_price,
+        'movement': movement,
+        'series': series
+    }
+    return JsonResponse(response, safe=True)    

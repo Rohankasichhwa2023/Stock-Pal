@@ -22,10 +22,10 @@ export default function TechnicalIndicators() {
     // indicator toggles & periods
     const [showSMA20, setShowSMA20] = useState(true);
     const [showSMA50, setShowSMA50] = useState(true);
-    const [showEMA20, setShowEMA20] = useState(true);
-    const [showBB, setShowBB] = useState(true);
-    const [showMACD, setShowMACD] = useState(true);
-    const [showRSI, setShowRSI] = useState(true);
+    const [showEMA20, setShowEMA20] = useState(false);
+    const [showBB, setShowBB] = useState(false);
+    const [showMACD, setShowMACD] = useState(false);
+    const [showRSI, setShowRSI] = useState(false);
     const [showVolume, setShowVolume] = useState(true);
     const [smaPeriodShort, setSmaPeriodShort] = useState(20);
     const [smaPeriodLong, setSmaPeriodLong] = useState(50);
@@ -146,29 +146,6 @@ export default function TechnicalIndicators() {
         return { upper, mid, lower };
     };
 
-    const supportResistance = (highs, lows, lookback = 4, limit = 4) => {
-        const res = [], sup = [];
-        for (let i = lookback; i < highs.length - lookback; i++) {
-            const h = highs[i]; if (h === null) continue;
-            let peaked = true;
-            for (let j = i - lookback; j <= i + lookback; j++) if (j !== i && highs[j] !== null && highs[j] > h) { peaked = false; break; }
-            if (peaked) res.push(h);
-            const l = lows[i]; if (l === null) continue;
-            let troughed = true;
-            for (let j = i - lookback; j <= i + lookback; j++) if (j !== i && lows[j] !== null && lows[j] < l) { troughed = false; break; }
-            if (troughed) sup.push(l);
-        }
-        const uniqueLevels = (arr) => {
-            const sorted = [...arr].sort((a, b) => b - a);
-            const out = [];
-            for (let v of sorted) {
-                if (!out.some((x) => Math.abs(x - v) / Math.max(x, v) < 0.01)) out.push(v);
-                if (out.length >= limit) break;
-            }
-            return out;
-        };
-        return { resistance: uniqueLevels(res), support: uniqueLevels(sup).sort((a, b) => a - b) };
-    };
 
     // ----- fetch & compute indicators -----
     useEffect(() => {
@@ -187,13 +164,11 @@ export default function TechnicalIndicators() {
                 const rsi14 = rsi(close, 14);
                 const macdObj = macd(close);
                 const bb = bollinger(close, 20, 2);
-                const sr = supportResistance(aligned.high, aligned.low, 4, 4);
                 const computed = {
                     ...aligned,
                     smaShort, smaLong, emaShort, rsi14,
                     macd: macdObj.macdLine, macdSignal: macdObj.signalLine, macdHist: macdObj.hist,
                     bb_upper: bb.upper, bb_mid: bb.mid, bb_lower: bb.lower,
-                    supportLevels: sr.support, resistanceLevels: sr.resistance,
                 };
                 setData(computed);
                 if (res.data.latest) setLatest(res.data.latest);
@@ -385,18 +360,6 @@ export default function TechnicalIndicators() {
             ctx.fillRect(cx - candleW / 2, yTop, candleW, bh);
         }
 
-        // support/resistance
-        const sr = { resistance: data.resistanceLevels || [], support: data.supportLevels || [] };
-        ctx.font = "11px Arial"; ctx.textAlign = "left";
-        sr.resistance.forEach((lvl, idx) => {
-            const y = priceToY(lvl); ctx.strokeStyle = "rgba(220,80,80,0.9)"; ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke();
-            ctx.fillStyle = "rgba(220,80,80,0.9)"; ctx.fillText(`R${idx + 1} ${lvl.toFixed(2)}`, chartLeft + 6, y - 6);
-        });
-        sr.support.forEach((lvl, idx) => {
-            const y = priceToY(lvl); ctx.strokeStyle = "rgba(60,150,120,0.9)"; ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke();
-            ctx.fillStyle = "rgba(60,150,120,0.9)"; ctx.fillText(`S${idx + 1} ${lvl.toFixed(2)}`, chartLeft + 6, y - 6);
-        });
-
         // panes stacked: MACD, RSI, Volume
         let offsetY = priceTop + priceHTotal + paneGap;
         if (showMACD) {
@@ -413,6 +376,7 @@ export default function TechnicalIndicators() {
                 ctx.fillStyle = h >= 0 ? "rgba(76,175,80,0.6)" : "rgba(244,67,54,0.6)";
                 ctx.fillRect(x, Math.min(y0, y), Math.max(1, candleW), Math.abs(y0 - y));
             }
+
             // lines
             ctx.lineWidth = 1.2; ctx.strokeStyle = "#3f51b5"; ctx.beginPath(); let startedML = false;
             for (let i = 0; i < n; i++) { const v = vis.macd[i]; if (v === null) continue; const x = chartLeft + candleSpacing * i + candleSpacing / 2; const y = macdToY(v); if (!startedML) { ctx.moveTo(x, y); startedML = true; } else ctx.lineTo(x, y); } ctx.stroke();
@@ -420,16 +384,51 @@ export default function TechnicalIndicators() {
             for (let i = 0; i < n; i++) { const v = vis.macdSignal[i]; if (v === null) continue; const x = chartLeft + candleSpacing * i + candleSpacing / 2; const y = macdToY(v); if (!startedSL) { ctx.moveTo(x, y); startedSL = true; } else ctx.lineTo(x, y); } ctx.stroke();
             offsetY += macdHLocal + paneGap;
         }
-
         if (showRSI) {
-            const rsiTop = offsetY; const rsiHLocal = rsiPaneH || Math.floor(height * 0.12);
+            const rsiTop = offsetY;
+            const rsiHLocal = rsiPaneH || Math.floor(height * 0.12);
             const rsiToY = (v) => rsiTop + rsiHLocal * (1 - v / 100);
-            ctx.strokeStyle = "#e9edf5";[70, 50, 30].forEach(lvl => { const y = rsiToY(lvl); ctx.beginPath(); ctx.moveTo(chartLeft, y); ctx.lineTo(chartRight, y); ctx.stroke(); });
+
+            // draw horizontal levels and labels
+            const levels = [70, 50, 30];
+            ctx.lineWidth = 1;
+            ctx.font = "11px Arial";
+            ctx.textAlign = "right";
+
+            levels.forEach((lvl) => {
+                const y = rsiToY(lvl);
+                // line
+                ctx.beginPath();
+                ctx.strokeStyle = "#e9edf5";
+                ctx.moveTo(chartLeft, y);
+                ctx.lineTo(chartRight, y);
+                ctx.stroke();
+
+                // colored label at left (just outside the chart area)
+                let lblColor = "#9e9e9e";
+                if (lvl === 70) lblColor = "#c62828"; // overbought
+                if (lvl === 30) lblColor = "#007f33"; // oversold
+                ctx.fillStyle = lblColor;
+                ctx.fillText(String(lvl), chartLeft - 8, y + 4);
+            });
+
+
+            // draw RSI line (unchanged)
             ctx.beginPath(); let startedR = false;
-            for (let i = 0; i < n; i++) { const v = vis.rsi14[i]; if (v === null) continue; const x = chartLeft + candleSpacing * i + candleSpacing / 2; const y = rsiToY(v); if (!startedR) { ctx.moveTo(x, y); startedR = true; } else ctx.lineTo(x, y); }
-            ctx.strokeStyle = "#9c27b0"; ctx.stroke();
+            for (let i = 0; i < n; i++) {
+                const v = vis.rsi14[i];
+                if (v === null) continue;
+                const x = chartLeft + candleSpacing * i + candleSpacing / 2;
+                const y = rsiToY(v);
+                if (!startedR) { ctx.moveTo(x, y); startedR = true; } else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = "#9c27b0";
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
             offsetY += rsiHLocal + paneGap;
         }
+
 
         if (showVolume) {
             const volTop = offsetY; const volHLocal = volumePaneH || Math.floor(height * 0.12);
@@ -570,27 +569,7 @@ export default function TechnicalIndicators() {
         };
     }, [data, presetView, draw]);
 
-    // helper UI actions for zoom/shift
-    const zoomBy = (factor) => {
-        if (!data) return;
-        const total = data.dates.length;
-        let s = viewRef.current.startIndex, e = viewRef.current.endIndex;
-        const center = s + (e - s) / 2;
-        let newRange = Math.max(10, Math.min(total, Math.round((e - s) * factor)));
-        let newStart = Math.max(0, Math.min(total - newRange, Math.round(center - newRange / 2)));
-        viewRef.current.startIndex = newStart; viewRef.current.endIndex = newStart + newRange;
-        draw();
-    };
 
-    const shiftBy = (deltaCandles) => {
-        if (!data) return;
-        const total = data.dates.length;
-        let s = viewRef.current.startIndex, e = viewRef.current.endIndex;
-        const n = e - s;
-        let newStart = Math.max(0, Math.min(total - n, s + deltaCandles));
-        viewRef.current.startIndex = newStart; viewRef.current.endIndex = newStart + n;
-        draw();
-    };
 
     // redraw when data or hoverIndex changes
     useEffect(() => { draw(); }, [data, draw, hoverIndex]);
@@ -661,25 +640,7 @@ export default function TechnicalIndicators() {
             <div style={{ display: "flex", gap: 12, marginBottom: 12, alignItems: "center", flexWrap: "wrap" }}>
                 <div style={{ background: "#fff", padding: 10, borderRadius: 8, border: "1px solid #e9eef8", display: "flex", gap: 12, alignItems: "center" }}>
                     <div>
-                        <strong style={{ fontSize: 16 }}>{symbol}</strong>
-                        {latest && <div style={{ fontSize: 13, color: "#333" }}>LTP: Rs. {latest.close} &nbsp; Vol: {latest.volume?.toLocaleString()}</div>}
-                    </div>
-
-                    <div style={{ marginLeft: 6 }}>
-                        {/* overall recommendation badge */}
-                        <div style={{
-                            padding: "6px 10px",
-                            borderRadius: 6,
-                            fontWeight: 700,
-                            fontSize: 13,
-                            ...(badgeStyle(latestSignals?.recommendation || null))
-                        }}>
-                            {latestSignals ? latestSignals.recommendation : "—"}
-                        </div>
-
-                        <div style={{ fontSize: 11, color: "#666", marginTop: 6 }}>
-                            {latestSignals ? `${latestSignals.trend.label} • ${latestSignals.macd.label} • ${latestSignals.rsi.label}` : "No signal"}
-                        </div>
+                        <strong style={{ fontSize: 16 }}>Indicators</strong>
                     </div>
                 </div>
 
@@ -694,11 +655,6 @@ export default function TechnicalIndicators() {
                             <option value="all">All</option>
                         </select>
                     </label>
-
-                    <button onClick={() => zoomBy(0.8)} style={{ padding: "6px 10px" }}>Zoom In</button>
-                    <button onClick={() => zoomBy(1.25)} style={{ padding: "6px 10px" }}>Zoom Out</button>
-                    <button onClick={() => shiftBy(-Math.max(1, Math.round((viewRef.current.endIndex - viewRef.current.startIndex) * 0.25)))} style={{ padding: "6px 10px" }}>◀ Shift</button>
-                    <button onClick={() => shiftBy(Math.max(1, Math.round((viewRef.current.endIndex - viewRef.current.startIndex) * 0.25)))} style={{ padding: "6px 10px" }}>Shift ▶</button>
 
                     <button onClick={() => {
                         if (!data) return;
@@ -758,40 +714,8 @@ export default function TechnicalIndicators() {
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {/* Info Card — always visible */}
                     <div style={{ background: "#fff", padding: 12, borderRadius: 8, border: "1px solid #e9eef8" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-                            <div>
-                                <strong>Info Card</strong>
-                                <div style={{ fontSize: 12, color: "#666", marginTop: 6 }}>
-                                    {pinnedIndex !== null ? `Pinned to ${data?.dates?.[pinnedIndex] ?? "—"}` : (hoverIndex !== null ? `Hovering ${data?.dates?.[hoverIndex] ?? "—"}` : "Showing latest")}
-                                </div>
-                            </div>
 
-                            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                                <button
-                                    onClick={() => {
-                                        // toggle pin: if not pinned, pin current shown index; if pinned -> unpin
-                                        if (pinnedIndex === null) {
-                                            const idxToPin = infoIndex;
-                                            if (idxToPin !== null) setPinnedIndex(idxToPin);
-                                        } else setPinnedIndex(null);
-                                    }}
-                                    title={pinnedIndex === null ? "Pin Info Card to current selection" : "Unpin Info Card"}
-                                    style={{
-                                        padding: "6px 10px",
-                                        borderRadius: 6,
-                                        border: "1px solid #e0e0e0",
-                                        background: pinnedIndex === null ? "#fff" : "#f0f7ff",
-                                        cursor: "pointer"
-                                    }}
-                                >
-                                    {pinnedIndex === null ? "Pin" : "Unpin"}
-                                </button>
-
-                                <button onClick={() => { setPinnedIndex(null); setHoverIndex(null); }} style={{ padding: "6px 10px", borderRadius: 6 }}>Show Latest</button>
-                            </div>
-                        </div>
-
-                        <div style={{ marginTop: 12 }}>
+                        <div>
                             {!info && <div style={{ color: "#666" }}>No data</div>}
                             {!!info && (
                                 <div style={{ fontSize: 13, lineHeight: 1.6 }}>
@@ -808,39 +732,68 @@ export default function TechnicalIndicators() {
                                     </div>
 
                                     <hr style={{ margin: "8px 0" }} />
+                                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                                            {/* RSI badge */}
+                                            {showRSI && (
+                                                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                                    <Badge
+                                                        text={sig?.rsi?.label ?? "RSI —"}
+                                                        color={sig?.rsi?.color ?? "#222"}
+                                                        bg={
+                                                            sig?.rsi?.color
+                                                                ? sig.rsi.color === "#9e9e9e"
+                                                                    ? "#eee"
+                                                                    : `${sig.rsi.color}1A`
+                                                                : "#eee"
+                                                        }
+                                                    />
+                                                    <span style={{ fontSize: 13, color: "#444" }}>
+                                                        {sig?.rsiV ? `${sig.rsiV.toFixed(1)}` : "—"}
+                                                    </span>
+                                                    <span style={{ fontSize: 12, color: "#777" }}>
+                                                        {sig?.rsi?.label === "Overbought"
+                                                            ? "Momentum: Price may drop soon."
+                                                            : sig?.rsi?.label === "Oversold"
+                                                                ? "Momentum: Price may rise soon."
+                                                                : "Momentum: Stable zone."}
+                                                    </span>
+                                                </div>
+                                            )}
 
-                                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                                        {/* RSI badge */}
-                                        {showRSI && <div>
-                                            <Badge text={sig?.rsi?.label ?? "RSI —"} color={sig?.rsi?.color ?? "#222"} bg={sig?.rsi?.color ? (sig.rsi.color === "#9e9e9e" ? "#eee" : `${sig.rsi.color}1A`) : "#eee"} />
-                                            <span style={{ fontSize: 13, color: "#444" }}>{sig?.rsiV ? `${sig.rsiV.toFixed(1)}` : "—"}</span>
-                                        </div>}
+                                            {/* MACD badge */}
+                                            {showMACD && (
+                                                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                                    <Badge
+                                                        text={sig?.macd?.label ?? "MACD —"}
+                                                        color={sig?.macd?.color ?? "#222"}
+                                                        bg={
+                                                            sig?.macd?.color
+                                                                ? sig.macd.color === "#9e9e9e"
+                                                                    ? "#eee"
+                                                                    : `${sig.macd.color}1A`
+                                                                : "#eee"
+                                                        }
+                                                    />
+                                                    <span style={{ fontSize: 13, color: "#444" }}>
+                                                        {sig?.macdV != null ? sig.macdV.toFixed(3) : "—"}
+                                                    </span>
+                                                    <span style={{ fontSize: 12, color: "#777" }}>
+                                                        {sig?.macd?.label === "Bullish"
+                                                            ? "Signal: Upward momentum (Buy)"
+                                                            : sig?.macd?.label === "Bearish"
+                                                                ? "Signal: Downward momentum (Sell)"
+                                                                : "Signal: Neutral / Hold"}
+                                                    </span>
+                                                </div>
+                                            )}
 
-                                        {/* MACD badge */}
-                                        {showMACD && <div>
-                                            <Badge text={sig?.macd?.label ?? "MACD —"} color={sig?.macd?.color ?? "#222"} bg={sig?.macd?.color ? (sig.macd.color === "#9e9e9e" ? "#eee" : `${sig.macd.color}1A`) : "#eee"} />
-                                            <span style={{ fontSize: 13, color: "#444" }}>{sig?.macdV != null ? sig.macdV.toFixed(3) : "—"}</span>
-                                        </div>}
 
-                                        {/* Trend badge */}
-                                        <div>
-                                            <Badge text={sig?.trend?.label ?? "Trend —"} color={sig?.trend?.color ?? "#222"} bg={sig?.trend?.color ? (sig.trend.color === "#9e9e9e" ? "#eee" : `${sig.trend.color}1A`) : "#eee"} />
-                                        </div>
 
-                                        {/* Recommendation badge */}
-                                        <div>
-                                            <span style={{
-                                                display: "inline-block", padding: "6px 10px", borderRadius: 6,
-                                                ...(badgeStyle(sig?.recommendation ?? null))
-                                            }}>{sig?.recommendation ?? "—"}</span>
                                         </div>
                                     </div>
-
                                     <hr style={{ margin: "8px 0" }} />
-
-                                    {/* detailed indicator values */}
                                     <div>
-                                        <div><strong>Indicators</strong></div>
                                         <div style={{ marginTop: 6 }}>
                                             {showSMA20 && <div>SMA {smaPeriodShort}: {info.smaShort ? info.smaShort.toFixed(2) : "—"}</div>}
                                             {showSMA50 && <div>SMA {smaPeriodLong}: {info.smaLong ? info.smaLong.toFixed(2) : "—"}</div>}
@@ -859,7 +812,7 @@ export default function TechnicalIndicators() {
 
                     {/* Toggles / Legend */}
                     <div style={{ background: "#fff", padding: 12, borderRadius: 8, border: "1px solid #e9eef8" }}>
-                        <strong>Toggles / Legend</strong>
+                        <strong>Toggle</strong>
                         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
                             <label><input type="checkbox" checked={showSMA20} onChange={(e) => setShowSMA20(e.target.checked)} /> SMA {smaPeriodShort}</label>
                             <label><input type="checkbox" checked={showSMA50} onChange={(e) => setShowSMA50(e.target.checked)} /> SMA {smaPeriodLong}</label>
@@ -872,6 +825,6 @@ export default function TechnicalIndicators() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
