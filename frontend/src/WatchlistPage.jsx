@@ -3,6 +3,7 @@ import api from "./api";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./component/Navbar";
+import "./WatchlistPage.css";
 
 const WatchlistPage = () => {
     const { accessToken } = useContext(AuthContext);
@@ -39,28 +40,37 @@ const WatchlistPage = () => {
     return (
         <>
             <Navbar />
-            <div style={{ maxWidth: 900, margin: "20px auto" }}>
-                <h2>Your Watchlist</h2>
+            <div className="watchlist-container">
+                <h2 className="watchlist-title">Your Watchlist</h2>
+
                 {loading ? (
-                    <p>Loading...</p>
+                    <p className="watchlist-loading">Loading your data...</p>
                 ) : items.length === 0 ? (
-                    <p>Your watchlist is empty. Add companies from the company page.</p>
+                    <div className="watchlist-empty">
+                        <p>Your watchlist is empty.</p>
+                        <p className="tip-text">Add companies from their detail pages to track them here.</p>
+                    </div>
                 ) : (
-                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <table className="watchlist-table">
                         <thead>
                             <tr>
                                 <th>Symbol</th>
-                                <th>Added</th>
+                                <th>Added On</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {items.map((it) => (
                                 <tr key={it.id}>
-                                    <td>{it.symbol}</td>
+                                    <td className="symbol">{it.symbol}</td>
                                     <td>{new Date(it.added_at).toLocaleString()}</td>
                                     <td>
-                                        <button onClick={() => handleGoToCompany(it.symbol)}>View</button>
+                                        <button
+                                            className="view-btn"
+                                            onClick={() => handleGoToCompany(it.symbol)}
+                                        >
+                                            View Details
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
