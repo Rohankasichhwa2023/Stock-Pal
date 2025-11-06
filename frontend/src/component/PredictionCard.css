@@ -1,0 +1,116 @@
+.prediction-card {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 24px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+.prediction-card__title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #2d9c73;
+}
+
+.prediction-card__next-day,
+.prediction-card__metrics {
+    margin-bottom: 24px;
+}
+
+.prediction-card__next-day h3,
+.prediction-card__metrics h3,
+.prediction-card__recent h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #2d9c73;
+}
+
+.prediction-card__details div,
+.prediction-card__metrics div {
+    font-size: 16px;
+    margin-bottom: 6px;
+}
+
+.prediction-card__movement {
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: white;
+}
+
+.prediction-card__movement.up {
+    background-color: #28a745;
+}
+
+.prediction-card__movement.down {
+    background-color: #dc3545;
+}
+
+.prediction-card__image {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.prediction-card__image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.prediction-card__recent {
+    margin-top: 16px;
+}
+
+.prediction-card__table-wrapper {
+    overflow-x: auto;
+}
+
+.prediction-card__table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.prediction-card__table thead {
+    background: #2d9c73;
+    color: white;
+}
+
+.prediction-card__table thead th {
+    padding: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.prediction-card__table tbody td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.prediction-card__table tbody tr:hover {
+    background: rgba(45, 156, 115, 0.1);
+    cursor: pointer;
+}
+
+.prediction-card__loading,
+.prediction-card__error {
+    text-align: center;
+    font-weight: 600;
+    margin-top: 40px;
+}
+
+.prediction-card__error {
+    color: #d9534f;
+}

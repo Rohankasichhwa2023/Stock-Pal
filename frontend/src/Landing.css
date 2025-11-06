@@ -1,0 +1,154 @@
+:root {
+    --accent: #2d9c73;
+    --card-bg: rgba(255, 255, 255, 0.28);
+}
+
+.landing-page {
+    position: relative;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+.landing-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+}
+
+/* Navbar */
+/* Navbar */
+.landing-navbar {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    /* center horizontally */
+    align-items: center;
+    padding: 20px 0 10px 0;
+    /* optional: reduce left/right padding */
+
+}
+
+.landing-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    text-align: center;
+    padding: 30px 20px 60px 20px;
+    z-index: 1;
+    color: black;
+}
+
+.hero-text h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.hero-text p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.hero-btn {
+    padding: 12px 28px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.hero-btn.primary {
+    background: var(--accent);
+    color: #fff;
+}
+
+.hero-btn.primary:hover {
+    opacity: 0.9;
+}
+
+.hero-btn.secondary {
+    background: #fff;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+}
+
+.hero-btn.secondary:hover {
+    opacity: 0.9;
+}
+
+/* Features Section */
+.features-section {
+    text-align: center;
+    padding: 30px 20px;
+    z-index: 1;
+}
+
+.features-section h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.features-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.feature-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 30px;
+    width: 260px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.feature-card h3 {
+    margin-bottom: 12px;
+    color: #2d9c73;
+}
+
+.feature-card p {
+    font-size: 14px;
+    color: #222;
+}
+
+/* Footer */
+.landing-footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: #555;
+    z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .features-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-text h1 {
+        font-size: 36px;
+    }
+}

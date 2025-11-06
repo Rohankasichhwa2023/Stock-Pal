@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css";
+import logo from "../logo.png"
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
@@ -78,7 +79,18 @@ const Navbar = () => {
         <div className="navbar-container">
             <div className="navbar">
                 <div className="nav-left">
-                    <h2 className="nav-title" onClick={goHome}>StockPal</h2>
+                    <img
+                        src={logo}
+                        className="nav-title"
+                        alt="App Logo"
+                        onClick={goHome}
+                        style={{
+                            width: "100px",
+                            height: "50px",
+                            objectFit: "cover",
+                            display: "block",
+                            margin: "0 auto 6px auto"
+                        }} />
                 </div>
 
                 <div className="nav-center">
@@ -114,8 +126,21 @@ const Navbar = () => {
                 </div>
 
                 <div className="nav-right">
-                    <button onClick={handleLogout} className="logout-btn">Logout</button>
+                    <div className="user-dropdown-container">
+                        <button
+                            className="user-btn"
+                            onClick={() => setShowDropdown((prev) => !prev)}
+                        >
+                            {user.username} ▼
+                        </button>
+                        {showDropdown && (
+                            <div className="user-dropdown">
+                                <button onClick={handleLogout}>Logout</button>
+                            </div>
+                        )}
+                    </div>
                 </div>
+
             </div>
 
             <div className="nav-links">

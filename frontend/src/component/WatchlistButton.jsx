@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import api from "../api";
 import { AuthContext } from "../AuthContext";
+import "./WatchlistButton.css"
 
 const WatchlistButton = ({ symbol }) => {
     const { accessToken } = useContext(AuthContext);
@@ -104,17 +105,26 @@ const WatchlistButton = ({ symbol }) => {
     }
 
     return (
-        <div>
+        <div className="watchlist-btn-container">
             {added ? (
-                <button onClick={handleRemove} disabled={loading}>
+                <button
+                    className="watchlist-btn added"
+                    onClick={handleRemove}
+                    disabled={loading}
+                >
                     {loading ? "Working..." : "Remove from Watchlist"}
                 </button>
             ) : (
-                <button onClick={handleAdd} disabled={loading}>
+                <button
+                    className="watchlist-btn not-added"
+                    onClick={handleAdd}
+                    disabled={loading}
+                >
                     {loading ? "Working..." : "Add to Watchlist"}
                 </button>
             )}
         </div>
+
     );
 };
 

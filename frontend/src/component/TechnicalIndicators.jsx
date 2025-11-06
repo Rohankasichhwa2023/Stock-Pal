@@ -24,7 +24,7 @@ export default function TechnicalIndicators() {
     const [showSMA50, setShowSMA50] = useState(true);
     const [showEMA20, setShowEMA20] = useState(false);
     const [showBB, setShowBB] = useState(false);
-    const [showMACD, setShowMACD] = useState(false);
+    const [showMACD, setShowMACD] = useState(true);
     const [showRSI, setShowRSI] = useState(false);
     const [showVolume, setShowVolume] = useState(true);
     const [smaPeriodShort, setSmaPeriodShort] = useState(20);

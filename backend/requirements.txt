@@ -1,0 +1,18 @@
+# Core web stack
+Django==5.2
+djangorestframework==3.16.0
+django-cors-headers==4.7.0
+django-filter==23.2            # useful for API filtering
+
+# DB + env
+python-dotenv==1.1.1
+psycopg2-binary==2.9.10       # if using PostgreSQL; replace with mysqlclient or PyMySQL if MySQL
+
+# Utilities
+gunicorn==20.1.0              # production WSGI server (Linux)
+whitenoise==6.5.0             # static files (optional)
+Pillow==10.1.0                # image handling (if needed)
+requests==2.31.0
+
+# Optional auth
+djangorestframework-simplejwt==5.5.1

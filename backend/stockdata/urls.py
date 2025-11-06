@@ -11,5 +11,9 @@ urlpatterns = [
    path("api/<str:symbol>/", views.stock_data, name="stock_data"),
    path("api/history/<str:symbol>/", views.price_history, name="price_history"),
    path("api/announcement/<str:symbol>/", views.announcement, name="announcement"),
-   path("api/prediction/<str:symbol>/", views.prediction_info, name="prediction_info"),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+   path("api/prediction/<str:symbol>/", views.stock_prediction , name="prediction_info"),
+]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static('/outputs/', document_root=settings.BASE_DIR / 'stockdata' / 'outputs')
+
+

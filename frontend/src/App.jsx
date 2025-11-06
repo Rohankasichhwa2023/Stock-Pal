@@ -7,6 +7,7 @@ import { AuthProvider } from "./AuthContext";
 import Company from "./Company";
 import WatchlistPage from "./WatchlistPage";
 import AllCompany from "./AllCompany";
+import Landing from "./Landing";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
