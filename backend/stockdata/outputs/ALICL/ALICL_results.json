@@ -1,0 +1,54 @@
+{
+  "symbol": "ALICL",
+  "timestamp": "2025-11-08T01:04:49.994573",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "tolerance": 0.006890585484463925,
+    "test_pct": 0.1
+  },
+  "regression": {
+    "mae": 15.677993774414062,
+    "rmse": 20.896387895988372,
+    "mape": 2.466508150100708,
+    "r2": 0.9674589037895203
+  },
+  "classification": {
+    "accuracy": 0.4110032362459547,
+    "weighted_precision": 0.3826160079504625,
+    "weighted_recall": 0.4110032362459547,
+    "weighted_f1": 0.34514807044933404
+  },
+  "next_prediction": {
+    "last_date": "2025-11-06",
+    "last_close": 473.2,
+    "predicted_date": "2025-11-07",
+    "predicted_close": 479.5493469238281,
+    "change_amount": 6.349346923828136,
+    "change_pct": 1.3417892907498175,
+    "direction": "UP"
+  }
+}

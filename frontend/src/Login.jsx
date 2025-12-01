@@ -41,9 +41,9 @@ const Login = () => {
                     src={logo}
                     alt="App Logo"
                     style={{
-                        width: "100px",
-                        height: "100px",
-                        objectFit: "cover",
+                        width: "150px",
+                        height: "150px",
+                        objectFit: "contain",
                         borderRadius: "50%",
                         display: "block",
                         margin: "0 auto 12px auto"

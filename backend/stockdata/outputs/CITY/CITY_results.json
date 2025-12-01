@@ -1,0 +1,54 @@
+{
+  "symbol": "CITY",
+  "timestamp": "2025-11-07T14:55:03.084987",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "tolerance": 0.009228403962597326,
+    "test_pct": 0.1
+  },
+  "regression": {
+    "mae": 41.806419372558594,
+    "rmse": 74.48782802201646,
+    "mape": 6.874826431274414,
+    "r2": 0.755164623260498
+  },
+  "classification": {
+    "accuracy": 0.509090909090909,
+    "weighted_precision": 0.536166619757951,
+    "weighted_recall": 0.509090909090909,
+    "weighted_f1": 0.4918485769549599
+  },
+  "next_prediction": {
+    "last_date": "2025-11-06",
+    "last_close": 524.9,
+    "predicted_date": "2025-11-07",
+    "predicted_close": 538.2716064453125,
+    "change_amount": 13.371606445312523,
+    "change_pct": 2.5474578863235897,
+    "direction": "UP"
+  }
+}

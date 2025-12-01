@@ -23,14 +23,11 @@ def add_to_watchlist(request):
     print("HTTP_AUTHORIZATION:", request.META.get('HTTP_AUTHORIZATION'))
 
     user = request.user
-    # from users.models import User
-    # user = User.objects.get(username='rohankasichhwa')
     symbol = (request.data.get('symbol') or "").strip().upper()
-    # symbol = (request.data.get('symbol') or "ADBL").strip().upper()
+
     if not symbol:
         return Response({'error': 'Symbol is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Prevent duplicates via get_or_create
     obj, created = WatchlistItem.objects.get_or_create(user=user, symbol=symbol)
     if not created:
         return Response({'message': 'Already in watchlist'}, status=status.HTTP_200_OK)

@@ -1,0 +1,54 @@
+{
+  "symbol": "SANIMA",
+  "timestamp": "2025-11-07T15:37:53.539104",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "tolerance": 0.003956550093954864,
+    "test_pct": 0.1
+  },
+  "regression": {
+    "mae": 4.255063533782959,
+    "rmse": 6.030398926452396,
+    "mape": 1.3179378509521484,
+    "r2": 0.958413302898407
+  },
+  "classification": {
+    "accuracy": 0.49038461538461536,
+    "weighted_precision": 0.5785256410256411,
+    "weighted_recall": 0.49038461538461536,
+    "weighted_f1": 0.37063892391761244
+  },
+  "next_prediction": {
+    "last_date": "2025-11-06",
+    "last_close": 316.0,
+    "predicted_date": "2025-11-07",
+    "predicted_close": 317.5829772949219,
+    "change_amount": 1.582977294921875,
+    "change_pct": 0.5009421819373022,
+    "direction": "UP"
+  }
+}

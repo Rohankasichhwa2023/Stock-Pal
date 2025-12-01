@@ -1,0 +1,54 @@
+{
+  "symbol": "API",
+  "timestamp": "2025-11-08T01:28:27.801532",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "tolerance": 0.005779539429260234,
+    "test_pct": 0.1
+  },
+  "regression": {
+    "mae": 4.545009136199951,
+    "rmse": 5.941587948199657,
+    "mape": 1.580540418624878,
+    "r2": 0.8226093053817749
+  },
+  "classification": {
+    "accuracy": 0.4692982456140351,
+    "weighted_precision": 0.48127228640707453,
+    "weighted_recall": 0.4692982456140351,
+    "weighted_f1": 0.4704728390772347
+  },
+  "next_prediction": {
+    "last_date": "2025-11-06",
+    "last_close": 279.0,
+    "predicted_date": "2025-11-07",
+    "predicted_close": 280.8421325683594,
+    "change_amount": 1.842132568359375,
+    "change_pct": 0.6602625693044355,
+    "direction": "UP"
+  }
+}

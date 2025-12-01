@@ -1,0 +1,54 @@
+{
+  "symbol": "AHL",
+  "timestamp": "2025-11-08T00:49:13.683681",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "tolerance": 0.0068810533173072575,
+    "test_pct": 0.1
+  },
+  "regression": {
+    "mae": 14.759771347045898,
+    "rmse": 19.706772251147417,
+    "mape": 2.274230718612671,
+    "r2": 0.02534019947052002
+  },
+  "classification": {
+    "accuracy": 0.5333333333333333,
+    "weighted_precision": 0.5266666666666667,
+    "weighted_recall": 0.5333333333333333,
+    "weighted_f1": 0.5203703703703704
+  },
+  "next_prediction": {
+    "last_date": "2025-11-06",
+    "last_close": 610.8,
+    "predicted_date": "2025-11-07",
+    "predicted_close": 597.74267578125,
+    "change_amount": -13.057324218749955,
+    "change_pct": -2.1377413586689515,
+    "direction": "DOWN"
+  }
+}

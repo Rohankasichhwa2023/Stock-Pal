@@ -1,5 +1,5 @@
 # views.py
-import os,joblib
+import os,joblib, base64
 import numbers
 import numpy as np
 import pandas as pd
@@ -8,15 +8,23 @@ from django.http import JsonResponse, Http404
 import math
 from django.core.cache import cache
 from django.conf import settings
-
+from django.views.decorators.csrf import csrf_exempt
+from stockdata.models import Company 
+from users.models import User
+from rest_framework.decorators import api_view, permission_classes,authentication_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from users.authentication import CustomJWTAuthentication
+from django.views.decorators.http import require_http_methods
 
 CACHE_TIMEOUT = 3600 
-# toggle for server-side debug prints
 DEBUG = False
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 COMPANIES_FILE = os.path.join(os.path.dirname(__file__), "data", "company_info.json")
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "outputs")
+DATA_FOLDER = os.path.join(settings.BASE_DIR, 'stockdata', 'data')
 
 
 def _to_safe_float_series(series):
@@ -36,13 +44,6 @@ def _finite_ohlc_mask(df, cols):
     return mask
 
 def _py_safe(v):
-    """
-    Convert a pandas/numpy value to JSON-safe Python primitive:
-      - pd.Timestamp -> 'YYYY-MM-DD'
-      - NaN/NaT/Inf -> None
-      - numpy/pandas numeric types -> native float/int
-      - other -> str(...) or None if conversion fails
-    """
     # None
     if v is None:
         return None
@@ -81,15 +82,7 @@ def _py_safe(v):
         return None
 
 def stock_data(request, symbol):
-    """
-    GET /api/<SYMBOL>/?limit=NN
-    Returns:
-      {
-        symbol: "SYMBOL",
-        latest: { date, close, volume },
-        chart: { dates: [...], open: [...], high: [...], low: [...], close: [...], volume: [...], sma20: [...], ... }
-      }
-    """
+   
     symbol = symbol.upper()
     file_path = os.path.join(DATA_DIR, f"{symbol}.csv")
 
@@ -99,9 +92,6 @@ def stock_data(request, symbol):
     # Read CSV
     df = pd.read_csv(file_path)
 
-    # ---------------------------
-    # Safe numeric conversion
-    # ---------------------------
     for col in ["Open", "High", "Low", "Close", "Volume", "Turnover"]:
         if col in df.columns:
             df[col] = _to_safe_float_series(df[col])
@@ -114,23 +104,17 @@ def stock_data(request, symbol):
     else:
         df["Date"] = pd.NaT
 
-    # Drop rows with invalid dates (can't plot without a date)
     df = df[df["Date"].notna()].copy()
 
-    # Drop rows where OHLC are not finite numbers (required for valid candlesticks)
     ohlc_cols = ["Open", "High", "Low", "Close"]
     df = df[_finite_ohlc_mask(df, ohlc_cols)].copy()
 
-    # Sort ascending by Date (oldest -> newest)
+  
     df = df.sort_values("Date").reset_index(drop=True)
 
     if df.shape[0] == 0:
         raise Http404(f"No valid OHLC rows for {symbol} after cleaning")
 
-    # ---------------------------
-    # Compute indicators on cleaned dataframe
-    # ---------------------------
-    # Use min_periods so early rows where indicator can't be computed remain NaN (we convert to None later)
     df["SMA20"] = df["Close"].rolling(window=20, min_periods=20).mean()
     df["SMA50"] = df["Close"].rolling(window=50, min_periods=50).mean()
     df["EMA20"] = df["Close"].ewm(span=20, adjust=False).mean()
@@ -302,16 +286,22 @@ def stock_data(request, symbol):
 
 
 def list_companies(request):
+    
     try:
-        with open(COMPANIES_FILE, "r", encoding="utf-8") as f:
-            company_info = json.load(f)
+        qs = Company.objects.all().order_by("symbol")
     except Exception as e:
-        print("Error loading company_info.json:", e)
-        company_info = []
+        return JsonResponse({"error": str(e)}, status=500)
 
-    # Sort alphabetically by symbol
-    company_info = sorted(company_info, key=lambda x: x["symbol"])
-    return JsonResponse(company_info, safe=False)
+    companies = [
+        {
+            "symbol": c.symbol,
+            "full_name": c.full_name,
+            "sector": c.sector,
+            "logo": c.logo,
+        }
+        for c in qs
+    ]
+    return JsonResponse(companies, safe=False)
 
 
 def price_history(request, symbol):
@@ -411,56 +401,50 @@ def price_history(request, symbol):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-
 def company_info(request, symbol):
+    """
+    Return a single company object by symbol, same shape as original JSON file:
+    { "symbol": "...", "full_name": "...", "sector": "...", "logo": "media/logos/..." }
+    """
+    symbol = (symbol or "").strip()
+    if not symbol:
+        raise Http404("Company not found")
 
     try:
-        with open(COMPANIES_FILE, "r", encoding="utf-8") as f:
-            companies = json.load(f)
-
-        # Find the company by symbol (case-insensitive)
-        company = next(
-            (c for c in companies if c["symbol"].lower() == symbol.lower()), None
-        )
-
-        if not company:
-            raise Http404("Company not found")
-
-        return JsonResponse(company, safe=False)
-
-    except FileNotFoundError:
-        return JsonResponse({"error": "Company info file not found"}, status=404)
+        company = Company.objects.get(symbol__iexact=symbol)
+    except Company.DoesNotExist:
+        raise Http404("Company not found")
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+    result = {
+        "symbol": company.symbol,
+        "full_name": company.full_name,
+        "sector": company.sector,
+        "logo": company.logo,
+    }
+    return JsonResponse(result, safe=False)
 
 
 
 def nepse_data(request):
-    # Path to your CSV file
+
     base_dir = os.path.dirname(os.path.abspath(__file__))
     csv_path = os.path.join(base_dir, 'data', 'nepse', 'nepse.csv')
     if not os.path.exists(csv_path):
         return JsonResponse({"error": "NEPSE CSV file not found"}, status=404)
 
-
-
-    # Read and clean data
     df = pd.read_csv(csv_path)
 
-    # Clean numeric columns (remove commas and convert to float)
     numeric_cols = ['Open', 'High', 'Low', 'Close', 'Change', 'Per Change (%)', 'Turnover']
     for col in numeric_cols:
         df[col] = df[col].astype(str).str.replace(',', '').astype(float)
 
-    # Format turnover to volume in millions (or keep original)
     df['Volume (in millions)'] = (df['Turnover'] / 1_000_000).round(2)
 
-    # Sort by date (optional)
     df['Date'] = pd.to_datetime(df['Date'])
     df = df.sort_values('Date', ascending=True)
 
-    # Prepare JSON response
     data = df.to_dict(orient='records')
 
     return JsonResponse({'data': data}, safe=False)
@@ -541,17 +525,132 @@ def announcement(request, symbol):
 
 
 def stock_prediction(request, symbol):
-    # Construct path to the JSON file
-    json_path = os.path.join(OUTPUT_DIR , symbol.upper(), f"{symbol.upper()}.json")
+    symbol_upper = symbol.upper()
+    json_path = os.path.join(OUTPUT_DIR, symbol_upper, f"{symbol_upper}_results.json")
+    csv_path = os.path.join(OUTPUT_DIR, symbol_upper, f"{symbol_upper}_results.csv")
 
-    # Check if file exists
-    if not os.path.exists(json_path):
+    if not os.path.exists(json_path) or not os.path.exists(csv_path):
         raise Http404("Prediction data not found.")
 
-    # Load JSON data
     with open(json_path, 'r') as f:
         data = json.load(f)
 
-    # Return JSON response
-    return JsonResponse(data, safe=False)
-  
+    try:
+        df = pd.read_csv(csv_path)
+    except Exception as e:
+        raise Http404(f"Error reading CSV: {e}")
+
+    predictions = []
+    for _, row in df.iterrows():
+        predictions.append({
+            "date": row.get("Date"),
+            "actual_close": row.get("Actual_Close"),
+            "pred_close": row.get("Predicted_Close"),
+            "actual_label": row.get("Actual_Direction"),
+            "pred_label": row.get("Predicted_Direction")
+        })
+
+    response_data = {
+        "symbol": data.get("symbol"),
+        "next_day_prediction": {
+            "last_date": data["next_prediction"].get("last_date"),
+            "last_close": data["next_prediction"].get("last_close"),
+            "predicted_date": data["next_prediction"].get("predicted_date"),
+            "pred_price": data["next_prediction"].get("predicted_close"),
+            "change_amount": data["next_prediction"].get("change_amount"),
+            "change_pct": data["next_prediction"].get("change_pct"),
+            "pred_movement": data["next_prediction"].get("direction")
+        },
+        "classification_metrics": data.get("classification"),
+        "predictions": predictions
+    }
+
+    return JsonResponse(response_data, safe=False)
+
+
+@api_view(['POST'])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([IsAuthenticated])
+def upload_stock_files(request):
+    user = request.user
+    if not getattr(user, 'is_admin', False):
+        return JsonResponse({"success": False, "message": "Forbidden - admin only"}, status=403)
+
+    if not request.FILES:
+        return JsonResponse({"success": False, "message": "No files uploaded"}, status=400)
+
+    try:
+        os.makedirs(DATA_FOLDER, exist_ok=True)
+        for key in request.FILES:
+            file = request.FILES[key]
+            safe_name = os.path.basename(file.name)
+            path = os.path.join(DATA_FOLDER, safe_name)
+            with open(path, "wb+") as f:
+                for chunk in file.chunks():
+                    f.write(chunk)
+    except Exception as exc:
+        return JsonResponse({"success": False, "message": f"File save error: {str(exc)}"}, status=500)
+
+    return JsonResponse({"success": True, "message": "Files uploaded successfully"}, status=200)
+
+
+
+# --- LIST ALL COMPANIES ---
+@require_http_methods(["GET"])
+def list_companies_admin(request):
+    companies = Company.objects.all().values(
+        "id", "symbol", "full_name", "sector", "logo", "metadata"
+    )
+    return JsonResponse(list(companies), safe=False)
+
+
+# --- CREATE NEW COMPANY ---
+@csrf_exempt
+@require_http_methods(["POST"])
+def create_company(request):
+    try:
+        data = json.loads(request.body)
+        company = Company.objects.create(
+            symbol=data["symbol"],
+            full_name=data.get("full_name", ""),
+            sector=data.get("sector", ""),
+            logo=data.get("logo", ""),
+            metadata=data.get("metadata", {}),
+        )
+        return JsonResponse({"status": "success", "id": company.id})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+# --- UPDATE COMPANY ---
+@csrf_exempt
+@require_http_methods(["PUT"])
+def update_company(request, company_id):
+    try:
+        data = json.loads(request.body)
+        company = Company.objects.get(id=company_id)
+        company.symbol = data.get("symbol", company.symbol)
+        company.full_name = data.get("full_name", company.full_name)
+        company.sector = data.get("sector", company.sector)
+        company.logo = data.get("logo", company.logo)
+        company.metadata = data.get("metadata", company.metadata)
+        company.save()
+        return JsonResponse({"status": "success"})
+    except Company.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Company not found"}, status=404)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+# --- DELETE COMPANY ---
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_company(request, company_id):
+    try:
+        company = Company.objects.get(id=company_id)
+        company.delete()
+        return JsonResponse({"status": "success"})
+    except Company.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Company not found"}, status=404)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)

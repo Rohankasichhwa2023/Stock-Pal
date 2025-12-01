@@ -1,0 +1,54 @@
+{
+  "symbol": "ADBL",
+  "timestamp": "2025-11-07T14:37:34.349044",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "tolerance": 0.004253000547320108,
+    "test_pct": 0.1
+  },
+  "regression": {
+    "mae": 4.690886497497559,
+    "rmse": 6.6841382284795605,
+    "mape": 1.4361660480499268,
+    "r2": 0.9663292765617371
+  },
+  "classification": {
+    "accuracy": 0.5253164556962026,
+    "weighted_precision": 0.5260374939913476,
+    "weighted_recall": 0.5253164556962026,
+    "weighted_f1": 0.5254876499217579
+  },
+  "next_prediction": {
+    "last_date": "2025-11-06",
+    "last_close": 318.0,
+    "predicted_date": "2025-11-07",
+    "predicted_close": 315.5906066894531,
+    "change_amount": -2.409393310546875,
+    "change_pct": -0.7576708523732312,
+    "direction": "DOWN"
+  }
+}

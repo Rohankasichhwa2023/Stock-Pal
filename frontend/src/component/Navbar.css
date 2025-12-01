@@ -8,22 +8,57 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
+/* ensure navbar has a consistent vertical size */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0 12px;
+    /* tighter padding */
+    min-height: 68px;
+    /* FIXED: Increased to accommodate larger logo */
+    /* prevents logo from blowing up navbar */
+    box-sizing: border-box;
 }
 
-/* --- Left Title --- */
+/* left container keeps items centered */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* logo styling - control size via max-height, keep aspect ratio */
+.nav-logo {
+    display: block;
+    max-height: 56px;
+    /* FIXED: Increased logo size for better visibility */
+    /* change this value to suit design (36-56px typical) */
+    height: auto;
+    width: auto;
+    object-fit: contain;
+    /* prevents distortion */
+    cursor: pointer;
+}
+
+/* responsive: reduce logo on very small screens */
+@media (max-width: 520px) {
+    .navbar {
+        min-height: 52px;
+        padding: 0 8px;
+    }
+
+    .nav-logo {
+        max-height: 36px;
+    }
+}
+
+/* cleanup: your .nav-title rules targeted same class name earlier — rename if unused */
 .nav-title {
+    /* only if used for text title; otherwise remove/ignore */
     font-size: 22px;
     font-weight: 700;
     color: #10b981;
-    /* Green accent */
-    cursor: pointer;
-    transition: color 0.2s ease;
 }
 
 
@@ -167,7 +202,9 @@
 }
 
 .user-btn {
-    background: var(--accent);
+    /* Using a CSS variable for accent color is best practice, 
+       but using a placeholder here since the var is not defined */
+    background: #10b981;
     color: #fff;
     border: none;
     border-radius: 6px;

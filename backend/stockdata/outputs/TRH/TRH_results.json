@@ -1,0 +1,54 @@
+{
+  "symbol": "TRH",
+  "timestamp": "2025-11-08T01:15:35.236725",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "tolerance": 0.005287938766050624,
+    "test_pct": 0.1
+  },
+  "regression": {
+    "mae": 209.77667236328125,
+    "rmse": 232.26460698145553,
+    "mape": 19.433446884155273,
+    "r2": -3.0515708923339844
+  },
+  "classification": {
+    "accuracy": 0.5186567164179104,
+    "weighted_precision": 0.43881383595854717,
+    "weighted_recall": 0.5186567164179104,
+    "weighted_f1": 0.3960072064157764
+  },
+  "next_prediction": {
+    "last_date": "2025-11-06",
+    "last_close": 717.0,
+    "predicted_date": "2025-11-07",
+    "predicted_close": 778.4242553710938,
+    "change_amount": 61.42425537109375,
+    "change_pct": 8.56684175329062,
+    "direction": "UP"
+  }
+}
