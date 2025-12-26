@@ -1,5 +1,6 @@
 # Python virtual environment
 backend/venv_py311/
+backend/venv/
 venv/
 env/
 
@@ -9,3 +10,5 @@ __pycache__/
 
 # Jupyter
 .ipynb_checkpoints/
+
+node_modules/

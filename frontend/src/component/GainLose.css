@@ -2,59 +2,83 @@
 
 .gainlose-container {
     padding: 16px;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .gainlose-container h2 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 8px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 4px;
 }
 
 .gainlose-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .gainlose-table th,
 .gainlose-table td {
-    border: 1px solid #ccc;
-    padding: 8px 12px;
+    padding: 10px 16px;
     text-align: center;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Light green header for Gainers table */
-.gainlose-table.gainers thead tr {
-    background-color: #d4edda;
+/* Entire table background colors */
+.gainlose-table.gainers {
+    background-color: #e6f9e8;
+    /* soft green background */
+}
+
+.gainlose-table.gainers th {
+    background-color: #c8f1c7;
+    /* slightly darker green for header */
+    color: #2c6f2c;
+}
+
+.gainlose-table.gainers td {
+    color: #2c6f2c;
+}
+
+.gainlose-table.losers {
+    background-color: #fdeaea;
+    /* soft reddish background */
+}
+
+.gainlose-table.losers th {
+    background-color: #fbcfcf;
+    /* slightly darker red for header */
+    color: #b03a2e;
+}
+
+.gainlose-table.losers td {
+    color: #b03a2e;
+}
+
+/* Hover effect */
+.gainlose-table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    /* light green */
 }
 
-.gainlose-table.gainers tbody tr {
-    cursor: pointer;
-}
+/* Responsive table */
+@media (max-width: 768px) {
 
-/* Light red header for Losers table */
-.gainlose-table.losers thead tr {
-    background-color: #f8d7da;
-    /* light red */
-}
-
-.gainlose-table.losers tbody tr {
-    cursor: pointer;
-}
-
-.gainlose-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.gainlose-table .gainer {
-    color: green;
-    font-weight: bold;
-}
-
-.gainlose-table .loser {
-    color: red;
-    font-weight: bold;
+    .gainlose-table th,
+    .gainlose-table td {
+        padding: 8px 10px;
+    }
 }

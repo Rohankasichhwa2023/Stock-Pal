@@ -50,6 +50,13 @@ const PredictionCard = () => {
                                 {next_day_prediction.pred_movement || "-"}
                             </span>
                         </div>
+                        <div>
+                            <strong>Change Amount: </strong>
+                            {next_day_prediction.change_amount != null
+                                ? `${next_day_prediction.change_amount > 0 ? '+' : ''}${next_day_prediction.change_amount.toFixed(2)}`
+                                : "-"}
+                        </div>
+
                         <div><strong>Last Close:</strong> {next_day_prediction.last_close ?? "-"}</div>
                         <div><strong>Last Date:</strong> {next_day_prediction.last_date || "-"}</div>
                     </div>
@@ -61,7 +68,6 @@ const PredictionCard = () => {
                 <div className="prediction-card__metrics">
                     <h3>Model Performance</h3>
                     <div><strong>Accuracy:</strong> {classification_metrics.hybrid_accuracy !== null ? (classification_metrics.hybrid_accuracy * 100).toFixed(2) + "%" : "-"}</div>
-                    <div><strong>Weighted F1:</strong> {classification_metrics.weighted_f1 !== null ? (classification_metrics.weighted_f1 * 100).toFixed(2) + "%" : "-"}</div>
                 </div>
             )}
 
