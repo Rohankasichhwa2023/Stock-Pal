@@ -3,6 +3,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom"
 import { AdminAuthContext } from "./AdminAuthContext";
 import "./AdminDashboard.css";
+import logo from "./logo.png"
+import Dashboard from "./component/DashBoardAdmin";
+import MissingStockFiles from "./component/MissingStockFiles";
 
 const AdminDashboard = () => {
     const { accessToken, adminUser, clearAuth } = useContext(AdminAuthContext);
@@ -186,6 +189,8 @@ const AdminDashboard = () => {
         );
     });
 
+
+
     // my code
     const [contentType, setContentType] = useState("dashboard");
 
@@ -193,6 +198,8 @@ const AdminDashboard = () => {
         <>
             <div className="left-navbar">
                 <div style={{ display: "flex", flexDirection: "column" }}>
+                    <img src={logo} alt="App Logo" className="nav-logo" />
+
                     <div style={{ textAlign: "center", padding: "12px 0px" }}>
                         <span>Welcome, <strong>{adminUser?.username || "Admin"}</strong></span>
                     </div>
@@ -208,15 +215,15 @@ const AdminDashboard = () => {
             </div >
             <div className="dashboard">
                 {
-                    contentType === "dashboard"
-                    &&
-                    <p>hello</p>
+                    contentType === "dashboard" &&
+                    <Dashboard />
                 }
+
                 {
                     contentType === "upload file"
                     &&
                     <section className="ad-card">
-                        <h3 className="ad-section-title">Upload Stock Files</h3>
+                        <h3 className="ad-section-title">Upload Company Stock Files</h3>
                         <div className="ad-upload-row">
                             <input
                                 className="ad-file-input"
@@ -229,7 +236,9 @@ const AdminDashboard = () => {
                             </button>
                         </div>
                         {uploadMessage && <p className="ad-message">{uploadMessage}</p>}
+                        <MissingStockFiles />
                     </section>
+
                 }
                 {
                     contentType === "manage company"

@@ -1,6 +1,6 @@
 {
   "symbol": "CITY",
-  "timestamp": "2025-11-07T14:55:03.084987",
+  "timestamp": "2025-12-12T10:28:44.791567",
   "config": {
     "seq_len": 60,
     "features": [
@@ -27,28 +27,39 @@
     ],
     "num_features": 20,
     "binary_classification": true,
-    "tolerance": 0.009228403962597326,
-    "test_pct": 0.1
+    "direction_tolerance": 0.009492613401821363,
+    "test_pct": 0.1,
+    "tolerance_correctness": {
+      "use_percent_threshold": true,
+      "abs_threshold": 5.0,
+      "pct_threshold": 0.04,
+      "use_volatility_scale": true,
+      "vol_multiplier": 1.0,
+      "vol_lookback": 200
+    }
   },
   "regression": {
-    "mae": 41.806419372558594,
-    "rmse": 74.48782802201646,
-    "mape": 6.874826431274414,
-    "r2": 0.755164623260498
+    "mae": 11.8980712890625,
+    "rmse": 18.68654219300241,
+    "mape": 2.08634614944458,
+    "r2": 0.6492145657539368
   },
   "classification": {
-    "accuracy": 0.509090909090909,
-    "weighted_precision": 0.536166619757951,
-    "weighted_recall": 0.509090909090909,
-    "weighted_f1": 0.4918485769549599
+    "accuracy": 0.5789473684210527,
+    "weighted_precision": 0.592797783933518,
+    "weighted_recall": 0.5789473684210527,
+    "weighted_f1": 0.5669856459330143,
+    "direction_accuracy": 0.5789473684210527,
+    "tolerance_accuracy": 0.7894736842105263,
+    "hybrid_accuracy": 0.8771929824561403
   },
   "next_prediction": {
-    "last_date": "2025-11-06",
-    "last_close": 524.9,
-    "predicted_date": "2025-11-07",
-    "predicted_close": 538.2716064453125,
-    "change_amount": 13.371606445312523,
-    "change_pct": 2.5474578863235897,
+    "last_date": "2025-12-11",
+    "last_close": 527.0,
+    "predicted_date": "2025-12-12",
+    "predicted_close": 531.0930786132812,
+    "change_amount": 4.09307861328125,
+    "change_pct": 0.7766752586871442,
     "direction": "UP"
   }
 }

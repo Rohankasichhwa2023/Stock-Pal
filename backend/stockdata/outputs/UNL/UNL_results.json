@@ -1,0 +1,65 @@
+{
+  "symbol": "UNL",
+  "timestamp": "2025-12-12T15:37:18.791776",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "direction_tolerance": 0.0038067689383160285,
+    "test_pct": 0.1,
+    "tolerance_correctness": {
+      "use_percent_threshold": true,
+      "abs_threshold": 5.0,
+      "pct_threshold": 0.04,
+      "use_volatility_scale": true,
+      "vol_multiplier": 1.0,
+      "vol_lookback": 200
+    }
+  },
+  "regression": {
+    "mae": 3915.924072265625,
+    "rmse": 3975.1861591628635,
+    "mape": 8.314553260803223,
+    "r2": -20.70093536376953
+  },
+  "classification": {
+    "accuracy": 0.4530386740331492,
+    "weighted_precision": 0.205244040169714,
+    "weighted_recall": 0.4530386740331492,
+    "weighted_f1": 0.28250320357960634,
+    "direction_accuracy": 0.4530386740331492,
+    "tolerance_accuracy": 0.0,
+    "hybrid_accuracy": 0.4530386740331492
+  },
+  "next_prediction": {
+    "last_date": "2025-12-11",
+    "last_close": 47530.0,
+    "predicted_date": "2025-12-12",
+    "predicted_close": 42855.6796875,
+    "change_amount": -4674.3203125,
+    "change_pct": -9.83446310225121,
+    "direction": "DOWN"
+  }
+}

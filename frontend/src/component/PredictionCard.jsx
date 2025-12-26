@@ -30,7 +30,7 @@ const PredictionCard = () => {
 
     const { next_day_prediction, classification_metrics, predictions } = data;
 
-    const imageUrl = `http://127.0.0.1:8000/outputs/${symbol}/${symbol}_predictions.png`;
+    const imageUrl = `http://127.0.0.1:8000/outputs/${symbol}/${symbol}_predictions.png?ts=${Date.now()}`;
 
     return (
         <div className="prediction-card">
@@ -60,7 +60,7 @@ const PredictionCard = () => {
             {classification_metrics && (
                 <div className="prediction-card__metrics">
                     <h3>Model Performance</h3>
-                    <div><strong>Accuracy:</strong> {classification_metrics.accuracy !== null ? (classification_metrics.accuracy * 100).toFixed(2) + "%" : "-"}</div>
+                    <div><strong>Accuracy:</strong> {classification_metrics.hybrid_accuracy !== null ? (classification_metrics.hybrid_accuracy * 100).toFixed(2) + "%" : "-"}</div>
                     <div><strong>Weighted F1:</strong> {classification_metrics.weighted_f1 !== null ? (classification_metrics.weighted_f1 * 100).toFixed(2) + "%" : "-"}</div>
                 </div>
             )}

@@ -1,6 +1,6 @@
 {
   "symbol": "API",
-  "timestamp": "2025-11-08T01:28:27.801532",
+  "timestamp": "2025-12-13T02:22:18.005464",
   "config": {
     "seq_len": 60,
     "features": [
@@ -27,28 +27,39 @@
     ],
     "num_features": 20,
     "binary_classification": true,
-    "tolerance": 0.005779539429260234,
-    "test_pct": 0.1
+    "direction_tolerance": 0.0054684060134320206,
+    "test_pct": 0.1,
+    "tolerance_correctness": {
+      "use_percent_threshold": true,
+      "abs_threshold": 5.0,
+      "pct_threshold": 0.04,
+      "use_volatility_scale": true,
+      "vol_multiplier": 1.0,
+      "vol_lookback": 200
+    }
   },
   "regression": {
-    "mae": 4.545009136199951,
-    "rmse": 5.941587948199657,
-    "mape": 1.580540418624878,
-    "r2": 0.8226093053817749
+    "mae": 4.62824010848999,
+    "rmse": 5.988342722796836,
+    "mape": 1.612428069114685,
+    "r2": 0.8117396831512451
   },
   "classification": {
-    "accuracy": 0.4692982456140351,
-    "weighted_precision": 0.48127228640707453,
-    "weighted_recall": 0.4692982456140351,
-    "weighted_f1": 0.4704728390772347
+    "accuracy": 0.4608695652173913,
+    "weighted_precision": 0.4549149338374291,
+    "weighted_recall": 0.4608695652173913,
+    "weighted_f1": 0.45621364658868807,
+    "direction_accuracy": 0.4608695652173913,
+    "tolerance_accuracy": 0.6391304347826087,
+    "hybrid_accuracy": 0.7130434782608696
   },
   "next_prediction": {
-    "last_date": "2025-11-06",
-    "last_close": 279.0,
-    "predicted_date": "2025-11-07",
-    "predicted_close": 280.8421325683594,
-    "change_amount": 1.842132568359375,
-    "change_pct": 0.6602625693044355,
-    "direction": "UP"
+    "last_date": "2025-12-11",
+    "last_close": 282.7,
+    "predicted_date": "2025-12-12",
+    "predicted_close": 281.0603942871094,
+    "change_amount": -1.6396057128906136,
+    "change_pct": -0.5799807969192124,
+    "direction": "DOWN"
   }
 }

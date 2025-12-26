@@ -1,0 +1,65 @@
+{
+  "symbol": "MNBBL",
+  "timestamp": "2025-12-12T15:58:53.220123",
+  "config": {
+    "seq_len": 60,
+    "features": [
+      "Close",
+      "Open",
+      "High",
+      "Low",
+      "Volume_norm",
+      "OBV_norm",
+      "Return",
+      "Return_lag1",
+      "Return_lag2",
+      "Return_lag5",
+      "EMA12",
+      "EMA26",
+      "SMA50",
+      "RSI",
+      "BB_position",
+      "MACD_hist",
+      "Volatility",
+      "ATR_norm",
+      "ROC",
+      "Price_position"
+    ],
+    "num_features": 20,
+    "binary_classification": true,
+    "direction_tolerance": 0.0051655199702642565,
+    "test_pct": 0.1,
+    "tolerance_correctness": {
+      "use_percent_threshold": true,
+      "abs_threshold": 5.0,
+      "pct_threshold": 0.04,
+      "use_volatility_scale": true,
+      "vol_multiplier": 1.0,
+      "vol_lookback": 200
+    }
+  },
+  "regression": {
+    "mae": 5.785574436187744,
+    "rmse": 8.022191263821865,
+    "mape": 1.4616503715515137,
+    "r2": 0.946641743183136
+  },
+  "classification": {
+    "accuracy": 0.4694533762057878,
+    "weighted_precision": 0.537756991133197,
+    "weighted_recall": 0.4694533762057878,
+    "weighted_f1": 0.3780095678770293,
+    "direction_accuracy": 0.4694533762057878,
+    "tolerance_accuracy": 0.6816720257234726,
+    "hybrid_accuracy": 0.7652733118971061
+  },
+  "next_prediction": {
+    "last_date": "2025-12-11",
+    "last_close": 344.0,
+    "predicted_date": "2025-12-12",
+    "predicted_close": 348.95758056640625,
+    "change_amount": 4.95758056640625,
+    "change_pct": 1.4411571413971658,
+    "direction": "UP"
+  }
+}

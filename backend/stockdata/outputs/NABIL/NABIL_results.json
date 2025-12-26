@@ -1,6 +1,6 @@
 {
   "symbol": "NABIL",
-  "timestamp": "2025-11-08T07:29:22.399932",
+  "timestamp": "2025-12-12T14:44:55.412836",
   "config": {
     "seq_len": 60,
     "features": [
@@ -27,28 +27,39 @@
     ],
     "num_features": 20,
     "binary_classification": true,
-    "tolerance": 0.0050911023811739415,
-    "test_pct": 0.1
+    "direction_tolerance": 0.0032741234273611225,
+    "test_pct": 0.1,
+    "tolerance_correctness": {
+      "use_percent_threshold": true,
+      "abs_threshold": 5.0,
+      "pct_threshold": 0.04,
+      "use_volatility_scale": true,
+      "vol_multiplier": 1.0,
+      "vol_lookback": 200
+    }
   },
   "regression": {
-    "mae": 16.82720375061035,
-    "rmse": 24.53699052061181,
-    "mape": 3.077664613723755,
-    "r2": 0.7227383255958557
+    "mae": 13.333486557006836,
+    "rmse": 17.72140822074171,
+    "mape": 2.514234781265259,
+    "r2": 0.840639591217041
   },
   "classification": {
-    "accuracy": 0.569620253164557,
-    "weighted_precision": 0.5560666946017888,
-    "weighted_recall": 0.569620253164557,
-    "weighted_f1": 0.5536078550560352
+    "accuracy": 0.5094339622641509,
+    "weighted_precision": 0.5737780192984031,
+    "weighted_recall": 0.5094339622641509,
+    "weighted_f1": 0.48854281672843874,
+    "direction_accuracy": 0.5094339622641509,
+    "tolerance_accuracy": 0.23270440251572327,
+    "hybrid_accuracy": 0.5440251572327044
   },
   "next_prediction": {
-    "last_date": "2025-11-06",
-    "last_close": 607.3,
-    "predicted_date": "2025-11-07",
-    "predicted_close": 644.296630859375,
-    "change_amount": 36.996630859375045,
-    "change_pct": 6.091985980466828,
+    "last_date": "2025-12-11",
+    "last_close": 495.0,
+    "predicted_date": "2025-12-12",
+    "predicted_close": 508.22784423828125,
+    "change_amount": 13.22784423828125,
+    "change_pct": 2.6722917653093434,
     "direction": "UP"
   }
 }

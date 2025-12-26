@@ -27,6 +27,7 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "outputs")
 DATA_FOLDER = os.path.join(settings.BASE_DIR, 'stockdata', 'data')
 
 
+
 def _to_safe_float_series(series):
     """
     Remove commas, coerce to numeric. Returns a pandas Series of floats with NaN for invalid entries.
@@ -402,10 +403,6 @@ def price_history(request, symbol):
         return JsonResponse({"error": str(e)}, status=500)
 
 def company_info(request, symbol):
-    """
-    Return a single company object by symbol, same shape as original JSON file:
-    { "symbol": "...", "full_name": "...", "sector": "...", "logo": "media/logos/..." }
-    """
     symbol = (symbol or "").strip()
     if not symbol:
         raise Http404("Company not found")
@@ -527,7 +524,8 @@ def announcement(request, symbol):
 def stock_prediction(request, symbol):
     symbol_upper = symbol.upper()
     json_path = os.path.join(OUTPUT_DIR, symbol_upper, f"{symbol_upper}_results.json")
-    csv_path = os.path.join(OUTPUT_DIR, symbol_upper, f"{symbol_upper}_results.csv")
+    csv_path = os.path.join(OUTPUT_DIR, symbol_upper, f"{symbol_upper}_results_with_tol.csv")
+
 
     if not os.path.exists(json_path) or not os.path.exists(csv_path):
         raise Http404("Prediction data not found.")
@@ -595,6 +593,39 @@ def upload_stock_files(request):
 
 
 
+def companies_without_stock_files(request):
+    # user = request.user
+    # if not getattr(user, 'is_admin', False):
+    #     return JsonResponse({"success": False, "message": "Forbidden - admin only"}, status=403)
+
+    # All files in stockdata/data
+    try:
+        os.makedirs(DATA_FOLDER, exist_ok=True)
+        existing_files = {
+            os.path.splitext(fname)[0].upper()
+            for fname in os.listdir(DATA_FOLDER)
+            if fname.lower().endswith(".csv")
+        }
+    except Exception as exc:
+        return JsonResponse({"success": False, "message": f"File read error: {str(exc)}"}, status=500)
+
+    # Get companies that DO NOT have a CSV file
+    missing_companies = []
+    for c in Company.objects.all():
+        symbol = (c.symbol or "").upper()
+        if symbol and symbol not in existing_files:
+            missing_companies.append({
+                "full_name": c.full_name,
+                "sector": c.sector,
+                "symbol": symbol,
+                "logo": c.logo
+            })
+
+    return JsonResponse({
+        "success": True,
+        "companies_missing_files": missing_companies
+    }, status=200)
+
 # --- LIST ALL COMPANIES ---
 @require_http_methods(["GET"])
 def list_companies_admin(request):
@@ -654,3 +685,163 @@ def delete_company(request, company_id):
         return JsonResponse({"status": "error", "message": "Company not found"}, status=404)
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+
+def admin_dashboard_stats(request):
+    """
+    Aggregates dashboard stats and returns:
+    - total_companies (int)
+    - trained_companies (int)
+    - to_train (int)
+    - min_accuracy / max_accuracy (floats or null)
+    - trained_companies_list: [{name,symbol,sector,logo}]
+    - to_train_companies_list: [{name,symbol,sector,logo}]
+    """
+    # 1) total companies from DB
+    try:
+        companies_qs = Company.objects.all()
+        total_companies = companies_qs.count()
+    except Exception as e:
+        return JsonResponse({"detail": f"DB error: {str(e)}"}, status=500)
+
+    # 2) outputs root resolution (same logic as before)
+    outputs_root = globals().get("OUTPUT_DIR") or getattr(settings, "STOCKDATA_OUTPUT_DIR", None)
+    if not outputs_root:
+        outputs_root = os.path.join(os.path.dirname(__file__), "outputs")
+
+    if not os.path.isdir(outputs_root):
+        return JsonResponse({"detail": f"Output directory not found: {outputs_root}"}, status=500)
+
+    # 3) list direct subdirectories (AHL, ADBL, CITY, ...)
+    try:
+        entries = os.listdir(outputs_root)
+        subdirs = [d for d in entries if os.path.isdir(os.path.join(outputs_root, d))]
+    except Exception as e:
+        return JsonResponse({"detail": f"Unable to read outputs directory: {str(e)}"}, status=500)
+
+    # Build set of trained symbols (normalized uppercase)
+    trained_symbols = {str(d).upper() for d in subdirs}
+
+    # 4) map companies by symbol for quick lookup (normalize uppercase)
+    company_map = {}
+    for c in companies_qs:
+        symbol = (getattr(c, "symbol", "") or "").upper()
+        company_map[symbol] = c
+
+    # 5) construct trained_companies_list (try to attach DB info if exists)
+    trained_companies_list = []
+    for sym in sorted(trained_symbols):
+        c = company_map.get(sym)
+        if c:
+            # logo URL: use build_absolute_uri if ImageField provides .url; fallback to empty string
+            logo_url = ""
+            try:
+                if getattr(c, "logo", None):
+                    # If logo has .url (ImageField)
+                    logo_url = request.build_absolute_uri(c.logo.url)
+            except Exception:
+                # maybe logo is a plain string field
+                logo_val = getattr(c, "logo", None)
+                if isinstance(logo_val, str):
+                    logo_url = logo_val
+            trained_companies_list.append({
+                "name": getattr(c, "full_name", None),
+                "symbol": getattr(c, "symbol", sym),
+                "sector": getattr(c, "sector", None),
+                "logo": logo_url or "",
+            })
+        else:
+            # symbol exists in outputs but no DB entry
+            trained_companies_list.append({
+                "name": None,
+                "symbol": sym,
+                "sector": None,
+                "logo": "",
+            })
+
+    # 6) construct to_train list (companies in DB not present in trained_symbols)
+    to_train_companies_list = []
+    for c in companies_qs:
+        sym = (getattr(c, "symbol", "") or "").upper()
+        if sym not in trained_symbols:
+            logo_url = ""
+            try:
+                if getattr(c, "logo", None):
+                    logo_url = request.build_absolute_uri(c.logo.url)
+            except Exception:
+                logo_val = getattr(c, "logo", None)
+                if isinstance(logo_val, str):
+                    logo_url = logo_val
+            to_train_companies_list.append({
+                "name": getattr(c, "full_name", None),
+                "symbol": getattr(c, "symbol", None),
+                "sector": getattr(c, "sector", None),
+                "logo": logo_url or "",
+            })
+
+    trained_companies = len(trained_companies_list)
+
+    # 7) same accuracy extraction logic as you already had
+    # 7) same accuracy extraction logic, but now track symbol for min/max
+    accuracy_records = []  # list of tuples: (symbol, accuracy)
+    for sub in subdirs:
+        symbol_dirname = str(sub)
+        symbol_upper = symbol_dirname.upper()
+        result_json = os.path.join(outputs_root, symbol_dirname, f"{symbol_upper}_results.json")
+        if not os.path.exists(result_json):
+            alt1 = os.path.join(outputs_root, symbol_dirname, f"{symbol_dirname}_results.json")
+            if os.path.exists(alt1):
+                result_json = alt1
+            else:
+                alt2 = os.path.join(outputs_root, symbol_dirname, f"{symbol_upper.lower()}_results.json")
+                if os.path.exists(alt2):
+                    result_json = alt2
+                else:
+                    continue
+        try:
+            with open(result_json, "r", encoding="utf-8") as fh:
+                data = json.load(fh)
+        except Exception:
+            continue
+        acc_value = None
+        if isinstance(data, dict):
+            cls = data.get("classification")
+            if isinstance(cls, dict) and "hybrid_accuracy" in cls:
+                acc_value = cls.get("hybrid_accuracy")
+            else:
+                for k in ("accuracy", "acc", "accuracy_score", "acc_score"):
+                    if k in data:
+                        acc_value = data.get(k)
+                        break
+        if acc_value is None:
+            continue
+        try:
+            accf = float(acc_value)
+            if accf <= 1:
+                accf = accf * 100.0
+            accuracy_records.append((symbol_upper, round(accf, 2)))
+        except Exception:
+            continue
+
+    # Compute min/max with corresponding symbol
+    if accuracy_records:
+        min_symbol, min_accuracy = min(accuracy_records, key=lambda x: x[1])
+        max_symbol, max_accuracy = max(accuracy_records, key=lambda x: x[1])
+    else:
+        min_symbol = max_symbol = min_accuracy = max_accuracy = None
+
+
+    to_train = max(0, total_companies - trained_companies)
+
+    return JsonResponse({
+        "total_companies": total_companies,
+        "trained_companies": trained_companies,
+        "to_train": to_train,
+        "min_accuracy": min_accuracy,
+        "min_accuracy_symbol": min_symbol,
+        "max_accuracy": max_accuracy,
+        "max_accuracy_symbol": max_symbol,
+        "trained_companies_list": trained_companies_list,
+        "to_train_companies_list": to_train_companies_list,
+    }, safe=False)

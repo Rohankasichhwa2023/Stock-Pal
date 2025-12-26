@@ -6,9 +6,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     # Admin company routes
     path("api/admin/companies/", views.list_companies_admin, name="list_companies_admin"),
+    path("api/admin/dashboard-stats/", views.admin_dashboard_stats, name="admin-dashboard-stats"),
     path("api/admin/companies/create/", views.create_company, name="create_company"),
+    path("api/admin/companies/companies_without_stock_files/", views.companies_without_stock_files, name="companies_without_stock_files"),
     path("api/admin/companies/update/<int:company_id>/", views.update_company, name="update_company"),
     path("api/admin/companies/delete/<int:company_id>/", views.delete_company, name="delete_company"),
+    
 
     # Company routes
     path("api/companies/", views.list_companies, name="list_companies"),
